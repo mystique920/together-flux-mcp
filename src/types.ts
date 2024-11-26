@@ -44,3 +44,34 @@ export function isValidSearchArgs(args: unknown): args is SearchArgs {
 
   return true;
 }
+
+export interface CrawlResult {
+  title: string;
+  link: string;
+  content: string;
+}
+
+export interface CrawlResponse {
+  crawlParameters: {
+    url: string;
+  };
+  results: CrawlResult;
+}
+
+export interface CrawlArgs {
+  url: string;
+}
+
+export function isValidCrawlArgs(args: unknown): args is CrawlArgs {
+  if (typeof args !== 'object' || args === null) {
+    return false;
+  }
+
+  const { url } = args as CrawlArgs;
+
+  if (typeof url !== 'string' || url.trim().length === 0) {
+    return false;
+  }
+
+  return true;
+}

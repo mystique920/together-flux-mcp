@@ -1,11 +1,29 @@
 # Search1API MCP Server
 
-A Model Context Protocol (MCP) server that provides search functionality using Search1API.
+A Model Context Protocol (MCP) server that provides search and crawl functionality using Search1API.
 
 ## Features
 
 - Web search functionality through Search1API
+- Web page content extraction (crawling)
 - Seamless integration with Claude Desktop
+- Support for Google search engine
+
+## Tools
+
+### 1. Search Tool
+- Name: `search`
+- Description: Search the web using Search1API
+- Parameters:
+  * `query` (required): Search query
+  * `max_results` (optional, default: 10): Number of results to return
+  * `search_service` (optional, default: "google"): Search service to use
+
+### 2. Crawl Tool
+- Name: `crawl`
+- Description: Extract content from a URL using Search1API
+- Parameters:
+  * `url` (required): URL to crawl
 
 ## Setup Guide
 
@@ -34,6 +52,11 @@ Update your Claude configuration file (`claude_desktop_config.json`) with the fo
 Configuration file location:
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+## Version History
+
+- v0.1.1: Added web crawling functionality
+- v0.1.0: Initial release with search functionality
 
 ## License
 

@@ -1,7 +1,7 @@
 {
   "name": "search1api-mcp",
-  "version": "0.1.0",
-  "description": "A Model Context Protocol (MCP) server that provides search functionality using Search1API",
+  "version": "0.1.1",
+  "description": "A Model Context Protocol (MCP) server that provides search and crawl functionality using Search1API",
   "private": false,
   "type": "module",
   "bin": {
@@ -29,6 +29,8 @@
     "mcp",
     "claude",
     "search",
+    "crawl",
+    "google",
     "search1api"
   ],
   "author": "fatwang2",
