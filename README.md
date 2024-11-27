@@ -2,6 +2,9 @@
 
 A Model Context Protocol (MCP) server that provides search and crawl functionality using Search1API.
 
+https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
+
+
 ## Features
 
 - Web search functionality through Search1API
