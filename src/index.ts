@@ -67,7 +67,7 @@ const SEARCH_TOOL: Tool = {
 
 const CRAWL_TOOL: Tool = {
   name: "crawl",
-  description: "Crawl and extract content from a specific URL",
+  description: "Extract content from URL",
   inputSchema: {
     type: "object",
     properties: {
