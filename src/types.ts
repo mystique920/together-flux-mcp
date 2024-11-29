@@ -75,3 +75,25 @@ export function isValidCrawlArgs(args: unknown): args is CrawlArgs {
 
   return true;
 }
+
+export interface SitemapResponse {
+  links: string[];
+}
+
+export interface SitemapArgs {
+  url: string;
+}
+
+export function isValidSitemapArgs(args: unknown): args is SitemapArgs {
+  if (typeof args !== 'object' || args === null) {
+    return false;
+  }
+
+  const { url } = args as SitemapArgs;
+
+  if (typeof url !== 'string' || url.trim().length === 0) {
+    return false;
+  }
+
+  return true;
+}

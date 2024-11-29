@@ -5,9 +5,9 @@ A Model Context Protocol (MCP) server that provides search and crawl functionali
 ## Features
 
 - Web search functionality through Search1API
-- Web page content extraction (crawling)
+- Web page content extraction
+- Website sitemap extraction
 - Seamless integration with Claude Desktop
-- Support for Google search engine
 
 ## Tools
 
@@ -24,6 +24,12 @@ A Model Context Protocol (MCP) server that provides search and crawl functionali
 - Description: Extract content from a URL using Search1API
 - Parameters:
   * `url` (required): URL to crawl
+
+### 3. Sitemap Tool
+- Name: `sitemap`
+- Description: Get all related links from a URL
+- Parameters:
+  * `url` (required): URL to get sitemap
 
 ## Setup Guide
 
@@ -55,6 +61,7 @@ Configuration file location:
 
 ## Version History
 
+- v0.1.2: Added sitemap functionality
 - v0.1.1: Added web crawling functionality
 - v0.1.0: Initial release with search functionality
 

@@ -17,7 +17,10 @@ import {
   isValidSearchArgs,
   CrawlResponse,
   CrawlArgs,
-  isValidCrawlArgs
+  isValidCrawlArgs,
+  SitemapResponse,
+  SitemapArgs,
+  isValidSitemapArgs
 } from "./types.js";
 
 dotenv.config();
@@ -32,7 +35,8 @@ const API_CONFIG = {
   DEFAULT_QUERY: 'latest news in the world',
   ENDPOINTS: {
     SEARCH: '/search',
-    CRAWL: '/crawl'
+    CRAWL: '/crawl',
+    SITEMAP: '/sitemap'
   }
 } as const;
 
@@ -70,6 +74,21 @@ const CRAWL_TOOL: Tool = {
       url: {
         type: "string",
         description: "URL to crawl"
+      }
+    },
+    required: ["url"]
+  }
+};
+
+const SITEMAP_TOOL: Tool = {
+  name: "sitemap",
+  description: "Get all related links from a URL",
+  inputSchema: {
+    type: "object",
+    properties: {
+      url: {
+        type: "string",
+        description: "URL to get sitemap"
       }
     },
     required: ["url"]
@@ -218,7 +237,7 @@ server.setRequestHandler(
 
 // Tool handlers
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [SEARCH_TOOL, CRAWL_TOOL],
+  tools: [SEARCH_TOOL, CRAWL_TOOL, SITEMAP_TOOL],
 }));
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -296,6 +315,31 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }],
             isError: true
           };
+        }
+      }
+
+      case "sitemap": {
+        if (!isValidSitemapArgs(args)) {
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            "Invalid sitemap arguments"
+          );
+        }
+
+        try {
+          const response = await makeRequest<SitemapResponse>(
+            API_CONFIG.ENDPOINTS.SITEMAP,
+            args
+          );
+          return {
+            content: [{
+              type: "text",
+              mimeType: "application/json",
+              text: JSON.stringify(response.links, null, 2)
+            }]
+          };
+        } catch (error) {
+          throw formatError(error);
         }
       }
 
