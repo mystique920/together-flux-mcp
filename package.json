@@ -5,7 +5,7 @@
   "private": false,
   "type": "module",
   "bin": {
-    "search1api-mcp": "./build/index.js"
+    "search1api-mcp": "build/index.js"
   },
   "files": [
     "build"
@@ -37,7 +37,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fatwang2/search1api-mcp"
+    "url": "git+https://github.com/fatwang2/search1api-mcp.git"
   },
   "engines": {
     "node": ">=18.0.0"
