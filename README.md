@@ -7,7 +7,8 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 
 ## Features
 
-- Web search functionality through Search1API
+- Web search functionality
+- News search functionality
 - Web page content extraction
 - Website sitemap extraction
 - Seamless integration with Claude Desktop
@@ -22,13 +23,21 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
   * `max_results` (optional, default: 10): Number of results to return
   * `search_service` (optional, default: "google"): Search service to use
 
-### 2. Crawl Tool
+### 2. News Tool
+- Name: `news`
+- Description: Search for news articles using Search1API
+- Parameters:
+  * `query` (required): Search query
+  * `max_results` (optional, default: 10): Number of results to return
+  * `search_service` (optional, default: "google"): Search service to use
+
+### 3. Crawl Tool
 - Name: `crawl`
 - Description: Extract content from a URL using Search1API
 - Parameters:
   * `url` (required): URL to crawl
 
-### 3. Sitemap Tool
+### 4. Sitemap Tool
 - Name: `sitemap`
 - Description: Get all related links from a URL
 - Parameters:
@@ -64,6 +73,7 @@ Configuration file location:
 
 ## Version History
 
+- v0.1.3: Added news search functionality
 - v0.1.2: Added sitemap functionality
 - v0.1.1: Added web crawling functionality
 - v0.1.0: Initial release with search functionality

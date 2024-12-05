@@ -20,7 +20,10 @@ import {
   isValidCrawlArgs,
   SitemapResponse,
   SitemapArgs,
-  isValidSitemapArgs
+  isValidSitemapArgs,
+  NewsResponse,
+  NewsArgs,
+  isValidNewsArgs
 } from "./types.js";
 
 dotenv.config();
@@ -36,7 +39,8 @@ const API_CONFIG = {
   ENDPOINTS: {
     SEARCH: '/search',
     CRAWL: '/crawl',
-    SITEMAP: '/sitemap'
+    SITEMAP: '/sitemap',
+    NEWS: '/news'
   }
 } as const;
 
@@ -64,7 +68,30 @@ const SEARCH_TOOL: Tool = {
     required: ["query"]
   }
 };
-
+const NEWS_TOOL: Tool = {
+  name: "news",
+  description: "Search for news articles",
+  inputSchema: {
+    type: "object",
+    properties: {
+      query: {
+        type: "string",
+        description: "News search query"
+      },
+      max_results: {
+        type: "number",
+        description: "Maximum number of results to return (default: 10)",
+        default: 10
+      },
+      search_service: {
+        type: "string",
+        description: "Search service to use (default: google)",
+        default: "google"
+      }
+    },
+    required: ["query"]
+  }
+};
 const CRAWL_TOOL: Tool = {
   name: "crawl",
   description: "Extract content from URL",
@@ -95,16 +122,33 @@ const SITEMAP_TOOL: Tool = {
   }
 };
 
+
+
 // Server implementation
 const server = new Server(
   {
     name: "search1api-mcp",
-    version: "0.1.0",
+    version: "0.1.3",
   },
   {
     capabilities: {
-      resources: {},
-      tools: {},
+      resources: {
+        supportedTypes: ["application/json", "text/plain"],
+      },
+      tools: {
+        search: {
+          description: "Search functionality"
+        },
+        news: {
+          description: "News search functionality"
+        },
+        crawl: {
+          description: "Web crawling functionality"
+        },
+        sitemap: {
+          description: "Sitemap extraction functionality"
+        }
+      },
     },
   }
 );
@@ -237,7 +281,7 @@ server.setRequestHandler(
 
 // Tool handlers
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [SEARCH_TOOL, CRAWL_TOOL, SITEMAP_TOOL],
+  tools: [SEARCH_TOOL, CRAWL_TOOL, SITEMAP_TOOL, NEWS_TOOL],
 }));
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -341,6 +385,34 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         } catch (error) {
           throw formatError(error);
         }
+      }
+
+      case "news": {
+        if (!isValidNewsArgs(args)) {
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            "Invalid news arguments"
+          );
+        }
+
+        const { query, max_results = 10, search_service = "google" } = args;
+
+        const response = await makeRequest<NewsResponse>(
+          API_CONFIG.ENDPOINTS.NEWS,
+          {
+            query,
+            search_service,
+            max_results
+          }
+        );
+
+        return {
+          content: [{
+            type: "text",
+            mimeType: "application/json",
+            text: JSON.stringify(response.results, null, 2)
+          }]
+        };
       }
 
       default:
