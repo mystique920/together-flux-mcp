@@ -46,9 +46,8 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 ## Setup Guide
 
 ### 1. Get Search1API Key
-1. Register at [Search1API](https://www.search1api.com/)
-2. Choose a pricing plan (starts from $0.99)
-3. After payment, copy your API key from the confirmation email
+1. Register at [Search1API](https://www.search1api.com/?utm_source=mcp)
+2. Get your api key and 100 free credits
 
 ### 2. Configure Claude Desktop
 Update your Claude configuration file (`claude_desktop_config.json`) with the following content:
