@@ -29,6 +29,7 @@ import {
 dotenv.config();
 
 const API_KEY = process.env.SEARCH1API_KEY;
+
 if (!API_KEY) {
   throw new Error("SEARCH1API_KEY environment variable is required");
 }
@@ -40,13 +41,14 @@ const API_CONFIG = {
     SEARCH: '/search',
     CRAWL: '/crawl',
     SITEMAP: '/sitemap',
-    NEWS: '/news'
+    NEWS: '/news',
+    REASONING: '/v1/chat/completions'
   }
 } as const;
 
 const SEARCH_TOOL: Tool = {
   name: "search",
-  description: "A fast way to search the world",
+  description: "Search the web for real-time results",
   inputSchema: {
     type: "object",
     properties: {
@@ -122,6 +124,21 @@ const SITEMAP_TOOL: Tool = {
   }
 };
 
+const REASONING_TOOL: Tool = {
+  name: "reasoning",
+  description: "Deep thinking and complex problem solving",
+  inputSchema: {
+    type: "object",
+    properties: {
+      content: {
+        type: "string",
+        description: "The question or problem that needs deep thinking"
+      }
+    },
+    required: ["content"]
+  }
+};
+
 
 
 // Server implementation
@@ -147,13 +164,16 @@ const server = new Server(
         },
         sitemap: {
           description: "Sitemap extraction functionality"
+        },
+        reasoning: {
+          description: "Deep thinking and complex problem solving"
         }
       },
     },
   }
 );
 
-// 添加服务器事件监听
+// Add server event listeners
 server.onerror = (error) => {
   log('MCP Server Error:', error);
 };
@@ -162,31 +182,23 @@ server.onclose = () => {
   log('MCP Server Connection Closed');
 };
 
-// 添加异步请求函数
+// Add asynchronous request function
 async function makeRequest<T>(endpoint: string, data: any): Promise<T> {
   const startTime = Date.now();
-  // 确保 BASE_URL 末尾没有斜杠，endpoint 开头有斜杠
+  // Ensure BASE_URL has no trailing slash and endpoint starts with slash
   const baseUrl = API_CONFIG.BASE_URL.replace(/\/+$/, '');
   const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${baseUrl}${path}`;
-  
-  log(`Starting request to ${url}`);
 
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
-
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
-      signal: controller.signal
+      body: JSON.stringify(data)
     });
-
-    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -194,29 +206,18 @@ async function makeRequest<T>(endpoint: string, data: any): Promise<T> {
     }
 
     const result = await response.json();
-    const endTime = Date.now();
-    log(`Request completed in ${endTime - startTime}ms`);
-    
+    const duration = Date.now() - startTime;
+    log(`API request to ${endpoint} completed in ${duration}ms`);
+
     return result;
   } catch (error) {
-    const endTime = Date.now();
-    log(`Request failed after ${endTime - startTime}ms:`, error);
-    
-    if (error instanceof Error) {
-      if (error.name === 'AbortError') {
-        throw new Error('Request timeout after 30 seconds');
-      }
-      // 添加更多网络错误的详细信息
-      const networkError = error as any;
-      if (networkError.code) {
-        throw new Error(`Network error (${networkError.code}): ${networkError.message}`);
-      }
-    }
+    const duration = Date.now() - startTime;
+    log(`API request to ${endpoint} failed after ${duration}ms:`, error);
     throw error;
   }
 }
 
-// 添加错误处理工具函数
+// Add error handling utility function
 function formatError(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
@@ -281,7 +282,7 @@ server.setRequestHandler(
 
 // Tool handlers
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [SEARCH_TOOL, CRAWL_TOOL, SITEMAP_TOOL, NEWS_TOOL],
+  tools: [SEARCH_TOOL, CRAWL_TOOL, SITEMAP_TOOL, NEWS_TOOL, REASONING_TOOL],
 }));
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -415,6 +416,47 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
+      case "reasoning": {
+        if (!args) {
+          throw new Error("No arguments provided");
+        }
+
+        const { content } = args;
+
+        const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.REASONING}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: "deepseek-r1-70b-fast-online",
+            messages: [
+              {
+                role: "user",
+                content: content
+              }
+            ],
+            stream: false
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(`API error: ${response.status} ${errorData.message || response.statusText}`);
+        }
+
+        const result = await response.json();
+
+        return {
+          content: [{
+            type: "text",
+            mimeType: "application/json",
+            text: JSON.stringify(result.choices[0].message)
+          }]
+        };
+      }
+
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,
@@ -434,7 +476,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-// 添加日志工具函数
+// Add logging utility function
 function log(message: string, ...args: any[]) {
   const timestamp = new Date().toISOString();
   console.error(`[${timestamp}] ${message}`, ...args);
@@ -444,7 +486,7 @@ async function runServer() {
   const transport = new StdioServerTransport();
   log("Starting Search1API MCP Server...");
   
-  // 添加全局错误处理
+  // Add global error handling
   process.on('uncaughtException', (error) => {
     log('Uncaught Exception:', error);
   });

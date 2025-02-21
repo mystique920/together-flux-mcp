@@ -11,7 +11,8 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 - News search functionality
 - Web page content extraction
 - Website sitemap extraction
-- Seamless integration with Claude Desktop
+- Deep thinking and complex problem solving with DeepSeek R1
+- Seamless integration with Claude Desktop, Cursor and Windsurf
 
 ## Tools
 
@@ -42,6 +43,12 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 - Description: Get all related links from a URL
 - Parameters:
   * `url` (required): URL to get sitemap
+
+### 5. Reasoning Tool
+- Name: `reasoning`
+- Description: A tool for deep thinking and complex problem solving with fast deepseek r1 model and web search ability(You can change to any other model in search1api website but the speed is not guaranteed)
+- Parameters:
+  * `content` (required): The question or problem that needs deep thinking
 
 ## Setup Guide
 
@@ -100,7 +107,7 @@ Read the Windsurf MCP Server [Official Documentation](https://docs.codeium.com/w
 
 ## Version History
 
-- v0.1.4: Added Cursor and Windsurf configuration guide
+- v0.1.4: Added reasoning tool with deepseek r1 and updated the Cursor and Windsurf configuration guide
 - v0.1.3: Added news search functionality
 - v0.1.2: Added sitemap functionality
 - v0.1.1: Added web crawling functionality

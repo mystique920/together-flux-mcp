@@ -144,3 +144,32 @@ export function isValidNewsArgs(args: unknown): args is NewsArgs {
 
   return true;
 }
+
+export interface ReasoningArgs {
+  content: string;
+}
+
+export interface ReasoningResponse {
+  choices: [{
+    message: {
+      content: string;
+      role: string;
+    };
+    finish_reason: string;
+    index: number;
+  }];
+}
+
+export function isValidReasoningArgs(args: unknown): args is ReasoningArgs {
+  if (typeof args !== 'object' || args === null) {
+    return false;
+  }
+
+  const { content } = args as ReasoningArgs;
+
+  if (typeof content !== 'string' || content.trim().length === 0) {
+    return false;
+  }
+
+  return true;
+}
