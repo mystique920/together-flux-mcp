@@ -1,6 +1,6 @@
 {
   "name": "search1api-mcp",
-  "version": "0.1.5",
+  "version": "0.1.4",
   "description": "A Model Context Protocol (MCP) server that provides search and crawl functionality using Search1API",
   "private": false,
   "type": "module",
