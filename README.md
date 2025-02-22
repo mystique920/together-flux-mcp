@@ -79,6 +79,11 @@ Configuration file location:
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
 #### 2.2 Cursor
+Easy way:
+1. Open Cursor Settings to add new MCP server `search1api` with the command `env SEARCH1API_KEY=your-search1api-key npx -y search1api-mcp`
+2. Add your own Search1API key to the command
+
+Safe way:
 1. Copy the run.template.sh to your file path and rename it to run.sh
 2. Add your own Search1API key to the run.sh file
 3. Open Cursor Settings to add new MCP server `search1api` with the command `sh ./your_file_path/run.sh`
