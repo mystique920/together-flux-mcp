@@ -54,17 +54,44 @@ const SEARCH_TOOL: Tool = {
     properties: {
       query: {
         type: "string",
-        description: "Search query"
+        description: "Search query in natural language. Be specific and concise for better results"
       },
       max_results: {
         type: "number",
-        description: "Maximum number of results to return (default: 10)",
+        description: "Maximum number of results to return",
         default: 10
       },
       search_service: {
         type: "string",
-        description: "Search service to use (default: google)",
-        default: "google"
+        description: "Specify the search engine to use. Choose based on your specific needs",
+        default: "google",
+        enum: ["google", "bing", "duckduckgo", "yahoo", "github", "youtube", "arxiv", "wechat", "bilibili", "imdb"]
+      },
+      crawl_results: {
+        type: "number",
+        description: "Number of results to crawl for full webpage content, useful when search result summaries are insufficient for complex queries",
+        default: 0
+      },
+      include_sites: {
+        type: "array",
+        items: {
+          type: "string"
+        },
+        description: "List of sites to include in search. Only use when you need special results from sites not available in search_service",
+        default: []
+      },
+      exclude_sites: {
+        type: "array",
+        items: {
+          type: "string"
+        },
+        description: "List of sites to exclude from search. Only use when you need to explicitly filter out specific domains from results",
+        default: []
+      },
+      time_range: {
+        type: "string",
+        description: "Time range for search results, only use when specific time constraints are required",
+        enum: ["day", "month", "year"]
       }
     },
     required: ["query"]
@@ -78,17 +105,44 @@ const NEWS_TOOL: Tool = {
     properties: {
       query: {
         type: "string",
-        description: "News search query"
+        description: "Search query in natural language. Be specific and concise for better results"
       },
       max_results: {
         type: "number",
-        description: "Maximum number of results to return (default: 10)",
+        description: "Maximum number of results to return",
         default: 10
       },
       search_service: {
         type: "string",
-        description: "Search service to use (default: google)",
-        default: "google"
+        description: "Specify the news engine to use. Choose based on your specific needs",
+        default: "bing",
+        enum: ["google", "bing", "duckduckgo", "yahoo", "hackernews"]
+      },
+      crawl_results: {
+        type: "number",
+        description: "Number of results to crawl for full webpage content, useful when search result summaries are insufficient for complex queries",
+        default: 0
+      },
+      include_sites: {
+        type: "array",
+        items: {
+          type: "string"
+        },
+        description: "List of sites to include in search. Only use when you need special results from sites not available in search_service",
+        default: []
+      },
+      exclude_sites: {
+        type: "array",
+        items: {
+          type: "string"
+        },
+        description: "List of sites to exclude from search. Only use when you need to explicitly filter out specific domains from results",
+        default: []
+      },
+      time_range: {
+        type: "string",
+        description: "Time range for search results, only use when specific time constraints are required",
+        enum: ["day", "month", "year"]
       }
     },
     required: ["query"]
@@ -145,7 +199,7 @@ const REASONING_TOOL: Tool = {
 const server = new Server(
   {
     name: "search1api-mcp",
-    version: "0.1.3",
+    version: "0.1.5",
   },
   {
     capabilities: {
@@ -302,15 +356,31 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           );
         }
 
-        const { query, max_results = 10, search_service = "google" } = args;
-
         const response = await makeRequest<SearchResponse>(
           API_CONFIG.ENDPOINTS.SEARCH,
-          {
-            query,
-            search_service,
-            max_results
-          }
+          args  
+        );
+
+        return {
+          content: [{
+            type: "text",
+            mimeType: "application/json",
+            text: JSON.stringify(response.results, null, 2)
+          }]
+        };
+      }
+
+      case "news": {
+        if (!isValidNewsArgs(args)) {
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            "Invalid news arguments"
+          );
+        }
+
+        const response = await makeRequest<NewsResponse>(
+          API_CONFIG.ENDPOINTS.NEWS,
+          args  
         );
 
         return {
@@ -386,34 +456,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         } catch (error) {
           throw formatError(error);
         }
-      }
-
-      case "news": {
-        if (!isValidNewsArgs(args)) {
-          throw new McpError(
-            ErrorCode.InvalidParams,
-            "Invalid news arguments"
-          );
-        }
-
-        const { query, max_results = 10, search_service = "google" } = args;
-
-        const response = await makeRequest<NewsResponse>(
-          API_CONFIG.ENDPOINTS.NEWS,
-          {
-            query,
-            search_service,
-            max_results
-          }
-        );
-
-        return {
-          content: [{
-            type: "text",
-            mimeType: "application/json",
-            text: JSON.stringify(response.results, null, 2)
-          }]
-        };
       }
 
       case "reasoning": {

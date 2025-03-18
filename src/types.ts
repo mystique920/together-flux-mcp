@@ -2,6 +2,7 @@ export interface SearchResult {
   title: string;
   link: string;
   snippet: string;
+  content?: string; 
 }
 
 export interface SearchResponse {
@@ -9,18 +10,46 @@ export interface SearchResponse {
     query: string;
     search_service: string;
     max_results: number;
-    crawl_results: number;
-    gl: string;
-    hl: string;
-    image: boolean;
+    [key: string]: any;  
   };
   results: SearchResult[];
+}
+
+export enum SearchService {
+  GOOGLE = "google",
+  BING = "bing",
+  DUCKDUCKGO = "duckduckgo",
+  YAHOO = "yahoo",
+  GITHUB = "github",
+  YOUTUBE = "youtube",
+  ARXIV = "arxiv",
+  WECHAT = "wechat",
+  BILIBILI = "bilibili",
+  IMDB = "imdb"
+}
+
+export enum NewsService {
+  GOOGLE = "google",
+  BING = "bing",
+  DUCKDUCKGO = "duckduckgo",
+  YAHOO = "yahoo",
+  HACKERNEWS = "hackernews"
+}
+
+export enum TimeRange {
+  DAY = "day",
+  MONTH = "month",
+  YEAR = "year"
 }
 
 export interface SearchArgs {
   query: string;
   max_results?: number;
-  search_service?: string;
+  search_service?: SearchService;
+  crawl_results?: number;
+  include_sites?: string[];
+  exclude_sites?: string[];
+  time_range?: TimeRange;
 }
 
 export function isValidSearchArgs(args: unknown): args is SearchArgs {
@@ -28,7 +57,15 @@ export function isValidSearchArgs(args: unknown): args is SearchArgs {
     return false;
   }
 
-  const { query, max_results, search_service } = args as SearchArgs;
+  const { 
+    query, 
+    max_results, 
+    search_service, 
+    crawl_results, 
+    include_sites, 
+    exclude_sites, 
+    time_range 
+  } = args as SearchArgs;
 
   if (typeof query !== 'string' || query.trim().length === 0) {
     return false;
@@ -38,8 +75,30 @@ export function isValidSearchArgs(args: unknown): args is SearchArgs {
     return false;
   }
 
-  if (search_service !== undefined && typeof search_service !== 'string') {
+  if (search_service !== undefined) {
+    const validServices = Object.values(SearchService);
+    if (!validServices.includes(search_service)) {
+      return false;
+    }
+  }
+  
+  if (crawl_results !== undefined && (typeof crawl_results !== 'number' || crawl_results < 0)) {
     return false;
+  }
+  
+  if (include_sites !== undefined && (!Array.isArray(include_sites) || !include_sites.every(site => typeof site === 'string'))) {
+    return false;
+  }
+  
+  if (exclude_sites !== undefined && (!Array.isArray(exclude_sites) || !exclude_sites.every(site => typeof site === 'string'))) {
+    return false;
+  }
+  
+  if (time_range !== undefined) {
+    const validTimeRanges = Object.values(TimeRange);
+    if (!validTimeRanges.includes(time_range)) {
+      return false;
+    }
   }
 
   return true;
@@ -102,6 +161,7 @@ export interface NewsResult {
   title: string;
   link: string;
   snippet: string;
+  content?: string; 
 }
 
 export interface NewsResponse {
@@ -109,10 +169,7 @@ export interface NewsResponse {
     query: string;
     search_service: string;
     max_results: number;
-    crawl_results: number;
-    gl: string;
-    hl: string;
-    image: boolean;
+    [key: string]: any; 
   };
   results: NewsResult[];
 }
@@ -120,7 +177,11 @@ export interface NewsResponse {
 export interface NewsArgs {
   query: string;
   max_results?: number;
-  search_service?: string;
+  search_service?: NewsService;
+  crawl_results?: number;
+  include_sites?: string[];
+  exclude_sites?: string[];
+  time_range?: TimeRange;
 }
 
 export function isValidNewsArgs(args: unknown): args is NewsArgs {
@@ -128,7 +189,15 @@ export function isValidNewsArgs(args: unknown): args is NewsArgs {
     return false;
   }
 
-  const { query, max_results, search_service } = args as NewsArgs;
+  const { 
+    query, 
+    max_results, 
+    search_service, 
+    crawl_results,
+    include_sites,
+    exclude_sites,
+    time_range
+  } = args as NewsArgs;
 
   if (typeof query !== 'string' || query.trim().length === 0) {
     return false;
@@ -138,8 +207,30 @@ export function isValidNewsArgs(args: unknown): args is NewsArgs {
     return false;
   }
 
-  if (search_service !== undefined && typeof search_service !== 'string') {
+  if (search_service !== undefined) {
+    const validServices = Object.values(NewsService);
+    if (!validServices.includes(search_service)) {
+      return false;
+    }
+  }
+
+  if (crawl_results !== undefined && (typeof crawl_results !== 'number' || crawl_results < 0)) {
     return false;
+  }
+
+  if (include_sites !== undefined && (!Array.isArray(include_sites) || !include_sites.every(site => typeof site === 'string'))) {
+    return false;
+  }
+
+  if (exclude_sites !== undefined && (!Array.isArray(exclude_sites) || !exclude_sites.every(site => typeof site === 'string'))) {
+    return false;
+  }
+
+  if (time_range !== undefined) {
+    const validTimeRanges = Object.values(TimeRange);
+    if (!validTimeRanges.includes(time_range)) {
+      return false;
+    }
   }
 
   return true;

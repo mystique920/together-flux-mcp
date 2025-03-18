@@ -20,17 +20,25 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 - Name: `search`
 - Description: Search the web using Search1API
 - Parameters:
-  * `query` (required): Search query
+  * `query` (required): Search query in natural language. Be specific and concise for better results
   * `max_results` (optional, default: 10): Number of results to return
-  * `search_service` (optional, default: "google"): Search service to use
+  * `search_service` (optional, default: "google"): Search service to use (google, bing, duckduckgo, yahoo, github, youtube, arxiv, wechat, bilibili, imdb)
+  * `crawl_results` (optional, default: 0): Number of results to crawl for full webpage content
+  * `include_sites` (optional): List of sites to include in search
+  * `exclude_sites` (optional): List of sites to exclude from search
+  * `time_range` (optional): Time range for search results ("day", "month", "year")
 
 ### 2. News Tool
 - Name: `news`
 - Description: Search for news articles using Search1API
 - Parameters:
-  * `query` (required): Search query
+  * `query` (required): Search query in natural language. Be specific and concise for better results
   * `max_results` (optional, default: 10): Number of results to return
-  * `search_service` (optional, default: "google"): Search service to use
+  * `search_service` (optional, default: "bing"): Search service to use (google, bing, duckduckgo, yahoo, hackernews)
+  * `crawl_results` (optional, default: 0): Number of results to crawl for full webpage content
+  * `include_sites` (optional): List of sites to include in search
+  * `exclude_sites` (optional): List of sites to exclude from search
+  * `time_range` (optional): Time range for search results ("day", "month", "year")
 
 ### 3. Crawl Tool
 - Name: `crawl`
@@ -112,6 +120,7 @@ Read the Windsurf MCP Server [Official Documentation](https://docs.codeium.com/w
 
 ## Version History
 
+- v0.1.5: Added new search parameters (include_sites, exclude_sites, time_range) and new search services (arxiv, wechat, bilibili, imdb)
 - v0.1.4: Added reasoning tool with deepseek r1 and updated the Cursor and Windsurf configuration guide
 - v0.1.3: Added news search functionality
 - v0.1.2: Added sitemap functionality
