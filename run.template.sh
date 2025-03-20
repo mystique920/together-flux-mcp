@@ -1,1 +1,0 @@
-SEARCH1API_KEY=your-search1api-key npx -y search1api-mcp

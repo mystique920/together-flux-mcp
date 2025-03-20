@@ -1,9 +1,12 @@
 # Search1API MCP Server
 
+[中文文档](./README_zh.md)
+
 A Model Context Protocol (MCP) server that provides search and crawl functionality using Search1API.
 
 https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 
+More discussions, please join the official [discord](https://discord.com/invite/AKXYq32Bxc)
 
 ## Features
 
@@ -12,7 +15,7 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 - Web page content extraction
 - Website sitemap extraction
 - Deep thinking and complex problem solving with DeepSeek R1
-- Seamless integration with Claude Desktop, Cursor and Windsurf
+- Seamless integration with Claude Desktop, Cursor, Windsurf, Cline and other MCP clients
 
 ## Tools
 
@@ -22,7 +25,7 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 - Parameters:
   * `query` (required): Search query in natural language. Be specific and concise for better results
   * `max_results` (optional, default: 10): Number of results to return
-  * `search_service` (optional, default: "google"): Search service to use (google, bing, duckduckgo, yahoo, github, youtube, arxiv, wechat, bilibili, imdb)
+  * `search_service` (optional, default: "google"): Search service to use (google, bing, duckduckgo, yahoo, github, youtube, arxiv, wechat, bilibili, imdb, wikipedia)
   * `crawl_results` (optional, default: 0): Number of results to crawl for full webpage content
   * `include_sites` (optional): List of sites to include in search
   * `exclude_sites` (optional): List of sites to exclude from search
@@ -65,8 +68,6 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 2. Get your api key and 100 free credits
 
 ### 2. Configure 
-#### 2.1 Claude Desktop
-Update your Claude configuration file (`claude_desktop_config.json`) with the following content:
 
 ```json
 {
@@ -81,45 +82,10 @@ Update your Claude configuration file (`claude_desktop_config.json`) with the fo
   }
 }
 ```
-
-Configuration file location:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-
-#### 2.2 Cursor
-Easy way:
-1. Open Cursor Settings to add new MCP server `search1api` with the command `env SEARCH1API_KEY=your-search1api-key npx -y search1api-mcp`
-2. Add your own Search1API key to the command
-
-Safe way:
-1. Copy the run.template.sh to your file path and rename it to run.sh
-2. Add your own Search1API key to the run.sh file
-3. Open Cursor Settings to add new MCP server `search1api` with the command `sh ./your_file_path/run.sh`
-
-Read the Cursor MCP Server [Official Documentation](https://docs.cursor.com/context/model-context-protocol#adding-an-mcp-server-to-cursor) to get more information.
-
-#### 2.3 Windsurf
-Update your Windsurf configuration file (`mcp_config.json`) with the following content:
-
-```json
-{
-  "mcpServers": {
-    "search1api": {
-      "command": "npx",
-      "args": ["-y", "search1api-mcp"],
-      "env": {
-        "SEARCH1API_KEY": "YOUR_SEARCH1API_KEY"
-      }
-    }
-  }
-}
-```
-Read the Windsurf MCP Server [Official Documentation](https://docs.codeium.com/windsurf/mcp) to get more information.
-
-**Notice: After the configuration is done, you can close Windsurf offcial web tools to save your credits**
 
 ## Version History
 
+- v0.1.6: Added Wikipedia search service
 - v0.1.5: Added new search parameters (include_sites, exclude_sites, time_range) and new search services (arxiv, wechat, bilibili, imdb)
 - v0.1.4: Added reasoning tool with deepseek r1 and updated the Cursor and Windsurf configuration guide
 - v0.1.3: Added news search functionality

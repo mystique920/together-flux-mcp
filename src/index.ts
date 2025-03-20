@@ -65,7 +65,7 @@ const SEARCH_TOOL: Tool = {
         type: "string",
         description: "Specify the search engine to use. Choose based on your specific needs",
         default: "google",
-        enum: ["google", "bing", "duckduckgo", "yahoo", "github", "youtube", "arxiv", "wechat", "bilibili", "imdb"]
+        enum: ["google", "bing", "duckduckgo", "yahoo", "github", "youtube", "arxiv", "wechat", "bilibili", "imdb", "wikipedia"]
       },
       crawl_results: {
         type: "number",
@@ -199,7 +199,7 @@ const REASONING_TOOL: Tool = {
 const server = new Server(
   {
     name: "search1api-mcp",
-    version: "0.1.5",
+    version: "0.1.6",
   },
   {
     capabilities: {

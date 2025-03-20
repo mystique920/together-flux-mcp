@@ -25,7 +25,8 @@ export enum SearchService {
   ARXIV = "arxiv",
   WECHAT = "wechat",
   BILIBILI = "bilibili",
-  IMDB = "imdb"
+  IMDB = "imdb",
+  WIKIPEDIA = "wikipedia",
 }
 
 export enum NewsService {
