@@ -154,11 +154,35 @@ export const REASONING_TOOL: Tool = {
   }
 };
 
+// Trending tool definition
+export const TRENDING_TOOL: Tool = {
+  name: "trending",
+  description: "Get trending topics from popular platforms",
+  inputSchema: {
+    type: "object",
+    properties: {
+      search_service: {
+        type: "string",
+        description: "Specify the platform to get trending topics from",
+        enum: ["github", "hackernews"],
+        default: "github"
+      },
+      max_results: {
+        type: "number",
+        description: "Maximum number of trending items to return",
+        default: 10
+      }
+    },
+    required: ["search_service"]
+  }
+};
+
 // Export all tools
 export const ALL_TOOLS = [
   SEARCH_TOOL,
   NEWS_TOOL,
   CRAWL_TOOL,
   SITEMAP_TOOL,
-  REASONING_TOOL
+  REASONING_TOOL,
+  TRENDING_TOOL
 ];

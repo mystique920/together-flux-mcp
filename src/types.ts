@@ -265,3 +265,51 @@ export function isValidReasoningArgs(args: unknown): args is ReasoningArgs {
 
   return true;
 }
+
+export enum TrendingService {
+  GITHUB = "github",
+  HACKERNEWS = "hackernews"
+}
+
+export interface TrendingResult {
+  title: string;
+  url: string;
+  description?: string;
+}
+
+export interface TrendingResponse {
+  trendingParameters: {
+    search_service: string;
+    max_results: number;
+    [key: string]: any;
+  };
+  results: TrendingResult[];
+}
+
+export interface TrendingArgs {
+  search_service: TrendingService;
+  max_results?: number;
+}
+
+export function isValidTrendingArgs(args: unknown): args is TrendingArgs {
+  if (typeof args !== 'object' || args === null) {
+    return false;
+  }
+
+  const { search_service, max_results } = args as TrendingArgs;
+
+  if (search_service === undefined) {
+    return false;
+  }
+
+  const validServices = Object.values(TrendingService);
+  if (!validServices.includes(search_service)) {
+    return false;
+  }
+
+  if (max_results !== undefined && (typeof max_results !== 'number' || max_results < 1 || max_results > 50)) {
+    return false;
+  }
+
+  return true;
+}

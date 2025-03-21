@@ -40,28 +40,39 @@ export function createServer() {
 
   return {
     start: async () => {
-      // Connect transport
-      log("Connecting to transport...");
       try {
         await server.connect(transport);
-        log("Successfully connected to transport");
+        log("Server started successfully");
       } catch (error) {
-        log("Error connecting to transport:", error);
+        log("Failed to start server:", error);
         throw error;
       }
     },
     stop: async () => {
-      // Close server
-      log("Stopping server...");
       try {
         await server.close();
-        log("Server stopped successfully");
+        log("Server stopped");
       } catch (error) {
         log("Error stopping server:", error);
-        throw error;
       }
     }
   };
+}
+
+/**
+ * Helper function to handle errors uniformly
+ */
+function handleError(context: string, error: unknown): never {
+  log(`Error ${context}:`, error);
+  
+  if (error instanceof McpError) {
+    throw error;
+  }
+  
+  throw new McpError(
+    ErrorCode.InternalError,
+    `${context}: ${formatError(error)}`
+  );
 }
 
 /**
@@ -77,16 +88,7 @@ function setupRequestHandlers(server: Server) {
       log(`Tool call received: ${toolName}`);
       return await handleToolCall(toolName, toolArgs);
     } catch (error) {
-      log(`Error handling tool call:`, error);
-      
-      if (error instanceof McpError) {
-        throw error;
-      }
-      
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Tool execution error: ${formatError(error)}`
-      );
+      handleError("handling tool call", error);
     }
   });
 
@@ -95,16 +97,7 @@ function setupRequestHandlers(server: Server) {
     try {
       return { resources: handleListResources() };
     } catch (error) {
-      log("Error handling list resources:", error);
-      
-      if (error instanceof McpError) {
-        throw error;
-      }
-      
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to list resources: ${formatError(error)}`
-      );
+      handleError("listing resources", error);
     }
   });
 
@@ -122,16 +115,7 @@ function setupRequestHandlers(server: Server) {
         }]
       };
     } catch (error) {
-      log(`Error handling read resource:`, error);
-      
-      if (error instanceof McpError) {
-        throw error;
-      }
-      
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to read resource: ${formatError(error)}`
-      );
+      handleError("reading resource", error);
     }
   });
 

@@ -18,7 +18,8 @@ export const API_CONFIG = {
     CRAWL: '/crawl',
     SITEMAP: '/sitemap',
     NEWS: '/news',
-    REASONING: '/v1/chat/completions'
+    REASONING: '/v1/chat/completions',
+    TRENDING: '/trending'
   }
 } as const;
 

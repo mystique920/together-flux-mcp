@@ -61,6 +61,13 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 - 参数：
   * `content`（必需）：需要深度思考的问题或难题
 
+### 6. 热榜工具
+- 名称：`trending`
+- 描述：获取流行平台的热门话题
+- 参数：
+  * `search_service`（必需）：指定获取热门话题的平台（github、hackernews）
+  * `max_results`（可选，默认值：10）：返回的热门项目数量
+
 ## 设置指南
 
 ### 1. 获取 Search1API 密钥
@@ -85,6 +92,7 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 
 ## 版本历史
 
+- v0.1.7：添加热榜工具，目前支持 GitHub 和 Hacker News 榜单
 - v0.1.6：添加 Wikipedia 搜索服务
 - v0.1.5：添加了新的搜索参数（include_sites、exclude_sites、time_range）和新的搜索服务（arxiv、wechat、bilibili、imdb）
 - v0.1.4：添加了使用 deepseek r1 的推理工具，并更新了 Cursor 和 Windsurf 配置指南

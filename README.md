@@ -61,6 +61,13 @@ More discussions, please join the official [discord](https://discord.com/invite/
 - Parameters:
   * `content` (required): The question or problem that needs deep thinking
 
+### 6. Trending Tool
+- Name: `trending`
+- Description: Get trending topics from popular platforms
+- Parameters:
+  * `search_service` (required): Specify the platform to get trending topics from (github, hackernews)
+  * `max_results` (optional, default: 10): Maximum number of trending items to return
+
 ## Setup Guide
 
 ### 1. Get Search1API Key
@@ -85,6 +92,7 @@ More discussions, please join the official [discord](https://discord.com/invite/
 
 ## Version History
 
+- v0.1.7: Added Trending tool for GitHub and Hacker News
 - v0.1.6: Added Wikipedia search service
 - v0.1.5: Added new search parameters (include_sites, exclude_sites, time_range) and new search services (arxiv, wechat, bilibili, imdb)
 - v0.1.4: Added reasoning tool with deepseek r1 and updated the Cursor and Windsurf configuration guide
