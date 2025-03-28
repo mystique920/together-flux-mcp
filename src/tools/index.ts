@@ -20,7 +20,7 @@ export const SEARCH_TOOL: Tool = {
         type: "string",
         description: "Specify the search engine to use. Choose based on your specific needs",
         default: "google",
-        enum: ["google", "bing", "duckduckgo", "yahoo", "github", "youtube", "arxiv", "wechat", "bilibili", "imdb", "wikipedia"]
+        enum: ["google", "bing", "duckduckgo", "yahoo", "x", "reddit", "github", "youtube", "arxiv", "wechat", "bilibili", "imdb", "wikipedia"]
       },
       crawl_results: {
         type: "number",

@@ -22,6 +22,8 @@ export enum SearchService {
   YAHOO = "yahoo",
   GITHUB = "github",
   YOUTUBE = "youtube",
+  X = "x",
+  REDDIT = "reddit",
   ARXIV = "arxiv",
   WECHAT = "wechat",
   BILIBILI = "bilibili",

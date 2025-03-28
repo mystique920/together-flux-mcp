@@ -6,7 +6,7 @@ Search1API 官方 MCP 服务，一个 API 里实现搜索和爬虫。
 
 https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 
-更多讨论，欢迎加入官方 [discord](https://discord.com/invite/AKXYq32Bxc) 频道
+更多讨论和更新，欢迎关注官方[推特](https://x.com/search1api)，或者加入官方 [discord](https://discord.com/invite/AKXYq32Bxc) 频道
 
 ## 功能特点
 
@@ -25,7 +25,7 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 - 参数：
   * `query`（必需）：用自然语言描述的搜索查询。请具体且简洁以获得更好的结果
   * `max_results`（可选，默认值：10）：返回结果的数量
-  * `search_service`（可选，默认值："google"）：使用的搜索服务（google、bing、duckduckgo、yahoo、github、youtube、arxiv、wechat、bilibili、imdb、wikipedia）
+  * `search_service`（可选，默认值："google"）：使用的搜索服务（google、bing、duckduckgo、yahoo、x、reddit、github、youtube、arxiv、wechat、bilibili、imdb、wikipedia）
   * `crawl_results`（可选，默认值：0）：需要爬取完整网页内容的结果数量
   * `include_sites`（可选）：搜索结果中要包含的网站列表
   * `exclude_sites`（可选）：搜索结果中要排除的网站列表
@@ -92,6 +92,7 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 
 ## 版本历史
 
+- v0.1.8：新增对 X（Twitter）、Reddit 搜索服务支持
 - v0.1.7：添加热榜工具，目前支持 GitHub 和 Hacker News 榜单
 - v0.1.6：添加 Wikipedia 搜索服务
 - v0.1.5：添加了新的搜索参数（include_sites、exclude_sites、time_range）和新的搜索服务（arxiv、wechat、bilibili、imdb）

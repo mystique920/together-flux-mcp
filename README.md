@@ -6,7 +6,7 @@ A Model Context Protocol (MCP) server that provides search and crawl functionali
 
 https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 
-More discussions, please join the official [discord](https://discord.com/invite/AKXYq32Bxc)
+More discussions and updates, please follow our official [X](https://x.com/search1api), or join the official [discord](https://discord.com/invite/AKXYq32Bxc)
 
 ## Features
 
@@ -25,7 +25,7 @@ More discussions, please join the official [discord](https://discord.com/invite/
 - Parameters:
   * `query` (required): Search query in natural language. Be specific and concise for better results
   * `max_results` (optional, default: 10): Number of results to return
-  * `search_service` (optional, default: "google"): Search service to use (google, bing, duckduckgo, yahoo, github, youtube, arxiv, wechat, bilibili, imdb, wikipedia)
+  * `search_service` (optional, default: "google"): Search service to use (google, bing, duckduckgo, yahoo, x, reddit, github, youtube, arxiv, wechat, bilibili, imdb, wikipedia)
   * `crawl_results` (optional, default: 0): Number of results to crawl for full webpage content
   * `include_sites` (optional): List of sites to include in search
   * `exclude_sites` (optional): List of sites to exclude from search
@@ -92,6 +92,7 @@ More discussions, please join the official [discord](https://discord.com/invite/
 
 ## Version History
 
+- v0.1.8: Added X(Twitter) and Reddit search services
 - v0.1.7: Added Trending tool for GitHub and Hacker News
 - v0.1.6: Added Wikipedia search service
 - v0.1.5: Added new search parameters (include_sites, exclude_sites, time_range) and new search services (arxiv, wechat, bilibili, imdb)
