@@ -11,7 +11,7 @@
     "build"
   ],
   "scripts": {
-    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && cp .env.example build/.env",
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"if (!require('fs').existsSync('.env.example')) { require('fs').writeFileSync('.env.example', '# Search1API Configuration\\n# Get your API key from https://www.search1api.com/?utm_source=mcp\\nSEARCH1API_KEY=your_api_key_here\\n') }\" && cp .env.example build/.env",
     "prepare": "npm run build",
     "watch": "tsc --watch",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js"
@@ -22,7 +22,6 @@
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "@types/dotenv": "^8.2.0",
     "@types/node": "^20.11.24",
     "typescript": "^5.3.3"
   },
