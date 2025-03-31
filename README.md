@@ -76,6 +76,31 @@ More discussions and updates, please follow our official [X](https://x.com/searc
 
 ### 2. Configure 
 
+You can configure the API key in three ways:
+
+#### Option 1: Using LibreChat's .env file (Recommended for LibreChat users)
+1. Add the following line to your LibreChat's `.env` file:
+   ```
+   SEARCH1API_KEY=your_api_key_here
+   ```
+2. Restart LibreChat to apply the changes
+
+#### Option 2: Using project's own .env file (Recommended for standalone use)
+1. Copy `.env.example` to `.env` in the project root:
+   ```bash
+   cp .env.example .env
+   ```
+2. Edit `.env` and add your Search1API key:
+   ```
+   SEARCH1API_KEY=your_api_key_here
+   ```
+3. Build the project:
+   ```bash
+   npm run build
+   ```
+   This will copy the `.env` file to the build directory.
+
+#### Option 3: Using MCP client configuration
 ```json
 {
   "mcpServers": {
@@ -89,6 +114,8 @@ More discussions and updates, please follow our official [X](https://x.com/searc
   }
 }
 ```
+
+Note: When using Option 2, make sure to rebuild the project after updating the `.env` file.
 
 ## Version History
 

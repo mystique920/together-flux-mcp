@@ -76,6 +76,31 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
 
 ### 2. 配置
 
+您可以通过三种方式配置 API 密钥：
+
+#### 选项 1：使用 LibreChat 的 .env 文件（推荐给 LibreChat 用户）
+1. 在 LibreChat 的 `.env` 文件中添加以下行：
+   ```
+   SEARCH1API_KEY=your_api_key_here
+   ```
+2. 重启 LibreChat 以应用更改
+
+#### 选项 2：使用项目自己的 .env 文件（推荐给独立使用用户）
+1. 在项目根目录复制 `.env.example` 到 `.env`：
+   ```bash
+   cp .env.example .env
+   ```
+2. 编辑 `.env` 并添加您的 Search1API 密钥：
+   ```
+   SEARCH1API_KEY=your_api_key_here
+   ```
+3. 构建项目：
+   ```bash
+   npm run build
+   ```
+   这将把 `.env` 文件复制到构建目录。
+
+#### 选项 3：使用 MCP 客户端配置
 ```json
 {
   "mcpServers": {
@@ -89,6 +114,8 @@ https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
   }
 }
 ```
+
+注意：使用选项 2 时，更新 `.env` 文件后需要重新构建项目。
 
 ## 版本历史
 
