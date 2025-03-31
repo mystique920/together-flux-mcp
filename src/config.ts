@@ -8,18 +8,21 @@ const __dirname = dirname(__filename);
 
 // Try to load .env from multiple locations
 const envPaths = [
-  // LibreChat's .env file (if running within LibreChat)
-  join(process.cwd(), '.env'),
-  // Project's own .env file
+  // Docker environment (when running as a module)
+  join(__dirname, '../../.env'),
+  // Project root (when running directly)
   join(__dirname, '../.env'),
-  // Build directory .env file
-  join(__dirname, '.env')
+  // Build directory
+  join(__dirname, '.env'),
+  // Current working directory (LibreChat's .env)
+  join(process.cwd(), '.env')
 ];
 
 // Try each path until we find one that works
 for (const path of envPaths) {
   const result = dotenv.config({ path });
   if (!result.error) {
+    console.log(`Loaded .env from: ${path}`);
     break;
   }
 }
