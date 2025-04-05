@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { log } from './utils.js';
 
 // Get the directory of the current file
 const __filename = fileURLToPath(import.meta.url);
@@ -19,19 +20,28 @@ const envPaths = [
 ];
 
 // Try each path until we find one that works
+let envLoaded = false;
 for (const path of envPaths) {
   const result = dotenv.config({ path });
   if (!result.error) {
-    console.log(`Loaded .env from: ${path}`);
+    log(`Loaded .env from: ${path}`);
+    envLoaded = true;
     break;
   }
+}
+
+if (!envLoaded) {
+  log('No .env file found in any of the checked locations');
 }
 
 // Check API key
 const API_KEY = process.env.SEARCH1API_KEY;
 
 if (!API_KEY) {
+  log('API key not found in environment variables');
   throw new Error("SEARCH1API_KEY environment variable is required. Please set it in your .env file or environment variables.");
+} else {
+  log('API key found in environment variables');
 }
 
 // API configuration

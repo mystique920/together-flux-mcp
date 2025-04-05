@@ -13,6 +13,9 @@ export async function makeRequest<T>(endpoint: string, data: any): Promise<T> {
   const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${baseUrl}${path}`;
 
+  // Debug log for API key
+  log(`Using API key: ${API_KEY ? 'Set' : 'Not set'}`);
+
   try {
     const response = await fetch(url, {
       method: 'POST',
