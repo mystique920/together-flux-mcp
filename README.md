@@ -40,59 +40,90 @@ npm start
 
 ## Integration with LibreChat (Docker)
 
-To integrate with LibreChat using Docker:
+This is the recommended method for using the Search1API MCP server with LibreChat when running via Docker.
 
-1. Clone this repository into your LibreChat's `mcp-server` directory:
-   ```bash
-   cd /path/to/librechat/mcp-server
-   git clone https://github.com/mystique920/search1api-mcp.git
-   ```
+**Overview:**
 
-2. Navigate into the cloned directory:
-   ```bash
-   cd search1api-mcp
-   ```
+1.  Clone this server's repository into a location accessible by your LibreChat `docker-compose.yml`.
+2.  Configure the required API key within this server's directory.
+3.  Build this server.
+4.  Tell LibreChat how to run this server by editing `librechat.yaml`.
+5.  Make sure the built server code is available inside the LibreChat container via a Docker volume bind.
+6.  Restart LibreChat.
 
-3. **Set up the API Key (Required for LibreChat):**
-   Due to current limitations in how LibreChat passes environment variables to MCP servers, you **must** place your API key in a `.env` file within this project's root directory.
-   ```bash
-   # Create the .env file
-   echo "SEARCH1API_KEY=your_api_key_here" > .env
-   # Replace 'your_api_key_here' with your actual key
-   ```
+**Step-by-Step:**
 
-4. Install dependencies and build the MCP server:
-   ```bash
-   npm install
-   npm run build
-   ```
+1.  **Clone the Repository:**
+    Navigate to the directory on your host machine where you manage external services for LibreChat (this is often alongside your `docker-compose.yml`). A common location is a dedicated `mcp-server` directory.
+    ```bash
+    # Example: Navigate to where docker-compose.yml lives, then into mcp-server
+    cd /path/to/your/librechat/setup/mcp-server 
+    git clone https://github.com/mystique920/search1api-mcp.git
+    ```
 
-5. Update your `librechat.yaml` configuration to point to the built server:
-   ```yaml
-   # librechat.yaml
-   mcp_servers:
-     search1api:
-       # Optional: Display name for the server in LibreChat UI
-       # name: Search1API Tools 
-       command: node
-       args:
-         # Path within the container
-         - /app/mcp-server/search1api-mcp/build/index.js 
-   ```
+2.  **Navigate into the Server Directory:**
+    ```bash
+    cd search1api-mcp
+    ```
 
-6. Ensure the volume bind for the MCP server directory exists in your `docker-compose.yml` (or `docker-compose.override.yml`):
-   ```yaml
-   # In your docker-compose file, under services -> api -> volumes:
-   volumes:
-     # ... other volumes
-     - ./mcp-server/search1api-mcp:/app/mcp-server/search1api-mcp 
-     # Ensure the source path matches where you cloned the repo relative to docker-compose
-   ```
+3.  **Configure API Key:**
+    Due to current limitations in LibreChat's environment variable handling for MCP servers, you **must** place your API key in a `.env` file within *this* directory (`search1api-mcp`).
+    ```bash
+    # Create the .env file
+    echo "SEARCH1API_KEY=your_api_key_here" > .env
+    # IMPORTANT: Replace 'your_api_key_here' with your actual Search1API key
+    ```
 
-7. Rebuild and restart LibreChat if necessary (e.g., if you changed `docker-compose.yml`):
-   ```bash
-   docker compose down && docker compose up -d --build
-   ```
+4.  **Install Dependencies and Build:**
+    This step compiles the server code into the `build` directory.
+    ```bash
+    npm install
+    npm run build
+    ```
+
+5.  **Configure `librechat.yaml`:**
+    Edit your main `librechat.yaml` file to tell LibreChat how to execute this MCP server. Add an entry under `mcp_servers`:
+    ```yaml
+    # In your main librechat.yaml
+    mcp_servers:
+      # You can add other MCP servers here too
+      search1api:
+        # Optional: Display name for the server in LibreChat UI
+        # name: Search1API Tools 
+        
+        # Command tells LibreChat to use 'node'
+        command: node 
+        
+        # Args specify the script for 'node' to run *inside the container*
+        args:
+          - /app/mcp-server/search1api-mcp/build/index.js 
+    ```
+    *   The `args` path (`/app/...`) is the location *inside* the LibreChat API container where the built server will be accessed (thanks to the volume bind in the next step).
+
+6.  **Configure Docker Volume Bind:**
+    Edit your `docker-compose.yml` (or more likely, your `docker-compose.override.yml`) to map the `search1api-mcp` directory from your host machine into the LibreChat API container. Find the `volumes:` section for the `api:` service:
+    ```yaml
+    # In your docker-compose.yml or docker-compose.override.yml
+    services:
+      api:
+        # ... other service config ...
+        volumes:
+          # ... other volumes likely exist here ...
+          
+          # Add this volume bind:
+          - ./mcp-server/search1api-mcp:/app/mcp-server/search1api-mcp
+    ```
+    *   **Host Path (`./mcp-server/search1api-mcp`):** This is the path on your host machine *relative* to where your `docker-compose.yml` file is located. Adjust it if you cloned the repo elsewhere.
+    *   **Container Path (`:/app/mcp-server/search1api-mcp`):** This is the path *inside* the container. It **must match** the directory structure used in the `librechat.yaml` `args` path.
+
+7.  **Restart LibreChat:**
+    Apply the changes by rebuilding (if you modified `docker-compose.yml`) and restarting your LibreChat stack.
+    ```bash
+    docker compose down && docker compose up -d --build
+    # Or: docker compose restart api (if only librechat.yaml changed)
+    ```
+
+Now, the Search1API server should be available as a tool provider within LibreChat.
 
 ## Features
 
