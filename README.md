@@ -7,45 +7,99 @@ A Model Context Protocol (MCP) server that provides search and crawl functionali
 ## Prerequisites
 
 - Node.js >= 18.0.0
-- A valid Search1API API key
+- A valid Search1API API key (See **Setup Guide** below on how to obtain and configure)
 
-## Installation
+## Installation (Standalone / General)
 
-1. Clone the repository:
-```bash
-git clone https://github.com/mystique920/search1api-mcp.git
-cd search1api-mcp
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/mystique920/search1api-mcp.git
+    cd search1api-mcp
+    ```
 
-2. **Important: Set up your API key before building**
-   - Create a `.env` file in the project root
-   - Add your Search1API key:
-   ```
-   SEARCH1API_KEY=your_api_key_here
-   ```
-   - The API key must be set before running `npm install` or `npm run build`
+2.  **Configure API Key:** Before building, you need to provide your Search1API key. See the **Setup Guide** section below for different methods (e.g., using a `.env` file or environment variables).
 
-3. Install dependencies and build:
-```bash
-npm install
-npm run build
-```
+3.  **Install dependencies and build:**
+    ```bash
+    npm install
+    npm run build
+    ```
+    *Note: If using the project's `.env` file method for the API key, ensure it exists before this step.*
 
-## Usage
+## Usage (Standalone / General)
+
+Ensure your API key is configured (see **Setup Guide**).
 
 Start the server:
 ```bash
 npm start
 ```
 
+The server will then be ready to accept connections from MCP clients.
+
+## Setup Guide
+
+### 1. Get Search1API Key
+
+1.  Register at [Search1API](https://www.search1api.com/?utm_source=mcp)
+2.  Get your API key from your dashboard.
+
+### 2. Configure API Key
+
+You need to make your API key available to the server. Choose **one** of the following methods:
+
+**Method A: Project `.env` File (Recommended for Standalone or LibreChat)**
+
+This method is required if integrating with the current version of LibreChat (see specific section below).
+
+1.  In the `search1api-mcp` project root directory, create a file named `.env`:
+    ```bash
+    # In the search1api-mcp directory
+    echo "SEARCH1API_KEY=your_api_key_here" > .env
+    ```
+2.  Replace `your_api_key_here` with your actual key.
+3.  Make sure this file exists **before** running `npm install && npm run build`.
+
+**Method B: Environment Variable (Standalone Only)**
+
+Set the `SEARCH1API_KEY` environment variable before starting the server.
+
+```bash
+export SEARCH1API_KEY="your_api_key_here"
+npm start
+```
+
+**Method C: MCP Client Configuration (Advanced)**
+
+Some MCP clients allow specifying environment variables directly in their configuration. This is useful for clients like Cursor, VS Code extensions, etc.
+
+```json
+{
+  "mcpServers": {
+    "search1api": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "search1api-mcp"
+      ],
+      "env": {
+        "SEARCH1API_KEY": "YOUR_SEARCH1API_KEY"
+      }
+    }
+  }
+}
+```
+
+**Note for LibreChat Users:** Due to current limitations in LibreChat, Method A (Project `.env` File) is the **required** method. See the dedicated integration section below for full instructions.
+
 ## Integration with LibreChat (Docker)
 
-This is the recommended method for using the Search1API MCP server with LibreChat when running via Docker.
+This section details the required steps for integrating with LibreChat via Docker.
 
 **Overview:**
 
 1.  Clone this server's repository into a location accessible by your LibreChat `docker-compose.yml`.
-2.  Configure the required API key within this server's directory.
+2.  Configure the required API key using the **Project `.env` File method** within this server's directory.
 3.  Build this server.
 4.  Tell LibreChat how to run this server by editing `librechat.yaml`.
 5.  Make sure the built server code is available inside the LibreChat container via a Docker volume bind.
@@ -57,7 +111,7 @@ This is the recommended method for using the Search1API MCP server with LibreCha
     Navigate to the directory on your host machine where you manage external services for LibreChat (this is often alongside your `docker-compose.yml`). A common location is a dedicated `mcp-server` directory.
     ```bash
     # Example: Navigate to where docker-compose.yml lives, then into mcp-server
-    cd /path/to/your/librechat/setup/mcp-server 
+    cd /path/to/your/librechat/setup/mcp-server
     git clone https://github.com/mystique920/search1api-mcp.git
     ```
 
@@ -66,8 +120,7 @@ This is the recommended method for using the Search1API MCP server with LibreCha
     cd search1api-mcp
     ```
 
-3.  **Configure API Key:**
-    Due to current limitations in LibreChat's environment variable handling for MCP servers, you **must** place your API key in a `.env` file within *this* directory (`search1api-mcp`).
+3.  **Configure API Key (Project `.env` File Method - Required for LibreChat):**
     ```bash
     # Create the .env file
     echo "SEARCH1API_KEY=your_api_key_here" > .env
@@ -89,14 +142,14 @@ This is the recommended method for using the Search1API MCP server with LibreCha
       # You can add other MCP servers here too
       search1api:
         # Optional: Display name for the server in LibreChat UI
-        # name: Search1API Tools 
-        
+        # name: Search1API Tools
+
         # Command tells LibreChat to use 'node'
-        command: node 
-        
+        command: node
+
         # Args specify the script for 'node' to run *inside the container*
         args:
-          - /app/mcp-server/search1api-mcp/build/index.js 
+          - /app/mcp-server/search1api-mcp/build/index.js
     ```
     *   The `args` path (`/app/...`) is the location *inside* the LibreChat API container where the built server will be accessed (thanks to the volume bind in the next step).
 
@@ -109,7 +162,7 @@ This is the recommended method for using the Search1API MCP server with LibreCha
         # ... other service config ...
         volumes:
           # ... other volumes likely exist here ...
-          
+
           # Add this volume bind:
           - ./mcp-server/search1api-mcp:/app/mcp-server/search1api-mcp
     ```
@@ -185,69 +238,9 @@ Now, the Search1API server should be available as a tool provider within LibreCh
   * `search_service` (required): Specify the platform to get trending topics from (github, hackernews)
   * `max_results` (optional, default: 10): Maximum number of trending items to return
 
-## Setup Guide
-
-### 1. Get Search1API Key
-1. Register at [Search1API](https://www.search1api.com/?utm_source=mcp)
-2. Get your api key and 100 free credits
-
-### 2. Configure
-
-**Note:** The recommended method depends on how you are running the server.
-
-#### Recommended for LibreChat Users:
-
-**Use the project's own `.env` file.** Due to current limitations in LibreChat's handling of environment variables for MCP servers, placing the key directly in the LibreChat main `.env` file is **not currently supported** for this server.
-
-1.  Create a `.env` file in the `search1api-mcp` project root directory:
-    ```bash
-    # In the search1api-mcp directory
-    echo "SEARCH1API_KEY=your_api_key_here" > .env 
-    ```
-2.  Replace `your_api_key_here` with your actual key.
-3.  Build the project if you haven't already:
-    ```bash
-    npm install && npm run build
-    ```
-
-#### Recommended for Standalone Use (Not with LibreChat):
-
-If running the server directly (not as a child process of LibreChat), you can use the project's `.env` file or environment variables.
-
-1.  **Using `.env` file:**
-    ```bash
-    # In the search1api-mcp directory
-    cp .env.example .env
-    # Edit .env and add your key
-    nano .env 
-    npm install && npm run build
-    ```
-2.  **Using Environment Variable:**
-    ```bash
-    export SEARCH1API_KEY="your_api_key_here"
-    npm start 
-    ```
-
-#### Using MCP client configuration (Advanced):
-
-This method works for clients like Cursor, VS Code extensions, etc., that allow direct configuration.
-
-```json
-{
-  "mcpServers": {
-    "search1api": {
-      "command": "npx",
-      "args": ["-y", "search1api-mcp"],
-      "env": {
-        "SEARCH1API_KEY": "YOUR_SEARCH1API_KEY"
-      }
-    }
-  }
-}
-```
-
 ## Version History
 
+- v0.2.0: Fixed API key handling for LibreChat integration by checking `process.env` first and falling back to a project root `.env` file. Updated dependencies (axios). Improved documentation for LibreChat setup.
 - v0.1.8: Added X(Twitter) and Reddit search services
 - v0.1.7: Added Trending tool for GitHub and Hacker News
 - v0.1.6: Added Wikipedia search service
