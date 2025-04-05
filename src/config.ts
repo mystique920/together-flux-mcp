@@ -9,24 +9,29 @@ const __dirname = dirname(__filename);
 
 // Try to load .env from multiple locations
 const envPaths = [
+  // LibreChat root (when running as child process)
+  '/app/.env',
   // Docker environment (when running as a module)
   join(__dirname, '../../.env'),
   // Project root (when running directly)
   join(__dirname, '../.env'),
   // Build directory
   join(__dirname, '.env'),
-  // Current working directory (LibreChat's .env)
+  // Current working directory (fallback)
   join(process.cwd(), '.env')
 ];
 
 // Try each path until we find one that works
 let envLoaded = false;
 for (const path of envPaths) {
+  log(`Attempting to load .env from: ${path}`);
   const result = dotenv.config({ path });
   if (!result.error) {
-    log(`Loaded .env from: ${path}`);
+    log(`Successfully loaded .env from: ${path}`);
     envLoaded = true;
     break;
+  } else {
+    log(`Failed to load .env from ${path}: ${result.error.message}`);
   }
 }
 
