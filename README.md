@@ -42,36 +42,57 @@ npm start
 
 To integrate with LibreChat using Docker:
 
-1. Clone the repository into your LibreChat's MCP server directory:
-```bash
-cd /path/to/librechat/mcp-server
-git clone https://github.com/mystique920/search1api-mcp.git
-```
+1. Clone this repository into your LibreChat's `mcp-server` directory:
+   ```bash
+   cd /path/to/librechat/mcp-server
+   git clone https://github.com/mystique920/search1api-mcp.git
+   ```
 
-2. Update your `librechat.yaml` configuration:
-```yaml
-search1api:
-  command: node
-  args:
-    - /app/mcp-server/search1api-mcp/build/index.js
-```
+2. Navigate into the cloned directory:
+   ```bash
+   cd search1api-mcp
+   ```
 
-3. Ensure proper volume binds in your Docker Compose file:
-```yaml
-volumes:
-  - ./mcp-server/search1api-mcp:/app/mcp-server/search1api-mcp
-```
+3. **Set up the API Key (Required for LibreChat):**
+   Due to current limitations in how LibreChat passes environment variables to MCP servers, you **must** place your API key in a `.env` file within this project's root directory.
+   ```bash
+   # Create the .env file
+   echo "SEARCH1API_KEY=your_api_key_here" > .env
+   # Replace 'your_api_key_here' with your actual key
+   ```
 
-4. Set up the API key:
-   - Create the `.env` file in the cloned repository
-   - Add your Search1API key
-   - The API key must be set before building the project
+4. Install dependencies and build the MCP server:
+   ```bash
+   npm install
+   npm run build
+   ```
 
-5. Rebuild and restart LibreChat:
-```bash
-docker-compose down
-docker-compose up -d
-```
+5. Update your `librechat.yaml` configuration to point to the built server:
+   ```yaml
+   # librechat.yaml
+   mcp_servers:
+     search1api:
+       # Optional: Display name for the server in LibreChat UI
+       # name: Search1API Tools 
+       command: node
+       args:
+         # Path within the container
+         - /app/mcp-server/search1api-mcp/build/index.js 
+   ```
+
+6. Ensure the volume bind for the MCP server directory exists in your `docker-compose.yml` (or `docker-compose.override.yml`):
+   ```yaml
+   # In your docker-compose file, under services -> api -> volumes:
+   volumes:
+     # ... other volumes
+     - ./mcp-server/search1api-mcp:/app/mcp-server/search1api-mcp 
+     # Ensure the source path matches where you cloned the repo relative to docker-compose
+   ```
+
+7. Rebuild and restart LibreChat if necessary (e.g., if you changed `docker-compose.yml`):
+   ```bash
+   docker compose down && docker compose up -d --build
+   ```
 
 ## Features
 
@@ -139,33 +160,47 @@ docker-compose up -d
 1. Register at [Search1API](https://www.search1api.com/?utm_source=mcp)
 2. Get your api key and 100 free credits
 
-### 2. Configure 
+### 2. Configure
 
-You can configure the API key in three ways:
+**Note:** The recommended method depends on how you are running the server.
 
-#### Option 1: Using LibreChat's .env file (Recommended for LibreChat users)
-1. Add the following line to your LibreChat's `.env` file:
-   ```
-   SEARCH1API_KEY=your_api_key_here
-   ```
-2. Restart LibreChat to apply the changes
+#### Recommended for LibreChat Users:
 
-#### Option 2: Using project's own .env file (Recommended for standalone use)
-1. Copy `.env.example` to `.env` in the project root:
-   ```bash
-   cp .env.example .env
-   ```
-2. Edit `.env` and add your Search1API key:
-   ```
-   SEARCH1API_KEY=your_api_key_here
-   ```
-3. Build the project:
-   ```bash
-   npm run build
-   ```
-   This will copy the `.env` file to the build directory.
+**Use the project's own `.env` file.** Due to current limitations in LibreChat's handling of environment variables for MCP servers, placing the key directly in the LibreChat main `.env` file is **not currently supported** for this server.
 
-#### Option 3: Using MCP client configuration
+1.  Create a `.env` file in the `search1api-mcp` project root directory:
+    ```bash
+    # In the search1api-mcp directory
+    echo "SEARCH1API_KEY=your_api_key_here" > .env 
+    ```
+2.  Replace `your_api_key_here` with your actual key.
+3.  Build the project if you haven't already:
+    ```bash
+    npm install && npm run build
+    ```
+
+#### Recommended for Standalone Use (Not with LibreChat):
+
+If running the server directly (not as a child process of LibreChat), you can use the project's `.env` file or environment variables.
+
+1.  **Using `.env` file:**
+    ```bash
+    # In the search1api-mcp directory
+    cp .env.example .env
+    # Edit .env and add your key
+    nano .env 
+    npm install && npm run build
+    ```
+2.  **Using Environment Variable:**
+    ```bash
+    export SEARCH1API_KEY="your_api_key_here"
+    npm start 
+    ```
+
+#### Using MCP client configuration (Advanced):
+
+This method works for clients like Cursor, VS Code extensions, etc., that allow direct configuration.
+
 ```json
 {
   "mcpServers": {
@@ -179,8 +214,6 @@ You can configure the API key in three ways:
   }
 }
 ```
-
-Note: When using Option 2, make sure to rebuild the project after updating the `.env` file.
 
 ## Version History
 
