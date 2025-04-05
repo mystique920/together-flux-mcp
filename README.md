@@ -13,7 +13,7 @@ A Model Context Protocol (MCP) server that provides search and crawl functionali
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/mystique920/search1api-mcp.git
+    git clone https://github.com/fatwang2/search1api-mcp.git
     cd search1api-mcp
     ```
 
@@ -112,7 +112,7 @@ This section details the required steps for integrating with LibreChat via Docke
     ```bash
     # Example: Navigate to where docker-compose.yml lives, then into mcp-server
     cd /path/to/your/librechat/setup/mcp-server
-    git clone https://github.com/mystique920/search1api-mcp.git
+    git clone https://github.com/fatwang2/search1api-mcp.git
     ```
 
 2.  **Navigate into the Server Directory:**

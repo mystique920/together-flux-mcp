@@ -13,7 +13,7 @@ Search1API 官方 MCP 服务，一个 API 里实现搜索和爬虫。
 
 1.  **克隆仓库:**
     ```bash
-    git clone https://github.com/mystique920/search1api-mcp.git
+    git clone https://github.com/fatwang2/search1api-mcp.git
     cd search1api-mcp
     ```
 
@@ -112,7 +112,7 @@ npm start
     ```bash
     # 示例: 导航到 docker-compose.yml 所在目录，然后进入 mcp-server
     cd /path/to/your/librechat/setup/mcp-server
-    git clone https://github.com/mystique920/search1api-mcp.git
+    git clone https://github.com/fatwang2/search1api-mcp.git
     ```
 
 2.  **进入服务目录:**
