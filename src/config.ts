@@ -3,6 +3,10 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { log } from './utils.js';
 
+// Log inherited environment and working directory
+log(`Current working directory: ${process.cwd()}`);
+log(`Inherited SEARCH1API_KEY: ${process.env.SEARCH1API_KEY || 'Not found'}`);
+
 // Get the directory of the current file
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
