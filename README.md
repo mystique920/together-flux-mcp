@@ -4,9 +4,74 @@
 
 A Model Context Protocol (MCP) server that provides search and crawl functionality using Search1API.
 
-https://github.com/user-attachments/assets/58bc98ae-3b6b-442c-a7fc-010508b5f028
+## Prerequisites
 
-More discussions and updates, please follow our official [X](https://x.com/search1api), or join the official [discord](https://discord.com/invite/AKXYq32Bxc)
+- Node.js >= 18.0.0
+- A valid Search1API API key
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/mystique920/search1api-mcp.git
+cd search1api-mcp
+```
+
+2. **Important: Set up your API key before building**
+   - Create a `.env` file in the project root
+   - Add your Search1API key:
+   ```
+   SEARCH1API_KEY=your_api_key_here
+   ```
+   - The API key must be set before running `npm install` or `npm run build`
+
+3. Install dependencies and build:
+```bash
+npm install
+npm run build
+```
+
+## Usage
+
+Start the server:
+```bash
+npm start
+```
+
+## Integration with LibreChat (Docker)
+
+To integrate with LibreChat using Docker:
+
+1. Clone the repository into your LibreChat's MCP server directory:
+```bash
+cd /path/to/librechat/mcp-server
+git clone https://github.com/mystique920/search1api-mcp.git
+```
+
+2. Update your `librechat.yaml` configuration:
+```yaml
+search1api:
+  command: node
+  args:
+    - /app/mcp-server/search1api-mcp/build/index.js
+```
+
+3. Ensure proper volume binds in your Docker Compose file:
+```yaml
+volumes:
+  - ./mcp-server/search1api-mcp:/app/mcp-server/search1api-mcp
+```
+
+4. Set up the API key:
+   - Create the `.env` file in the cloned repository
+   - Add your Search1API key
+   - The API key must be set before building the project
+
+5. Rebuild and restart LibreChat:
+```bash
+docker-compose down
+docker-compose up -d
+```
 
 ## Features
 
