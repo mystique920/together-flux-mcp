@@ -240,7 +240,7 @@ npm start
 
 ## 版本历史
 
-- v0.2.0: 修复了 LibreChat 集成的 API 密钥处理，优先检查 `process.env`，然后回退到项目根目录的 `.env` 文件。更新了依赖项 (axios)。改进了 LibreChat 设置文档。
+- v0.2.0: 为 LibreChat 集成添加了回退 `.env` 支持并更新了依赖项。
 - v0.1.8: 新增对 X (Twitter)、Reddit 搜索服务支持
 - v0.1.7: 添加热榜工具，目前支持 GitHub 和 Hacker News 榜单
 - v0.1.6: 添加 Wikipedia 搜索服务

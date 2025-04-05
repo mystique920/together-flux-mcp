@@ -240,7 +240,7 @@ Now, the Search1API server should be available as a tool provider within LibreCh
 
 ## Version History
 
-- v0.2.0: Fixed API key handling for LibreChat integration by checking `process.env` first and falling back to a project root `.env` file. Updated dependencies (axios). Improved documentation for LibreChat setup.
+- v0.2.0: Added fallback `.env` support for LibreChat integration and updated dependencies.
 - v0.1.8: Added X(Twitter) and Reddit search services
 - v0.1.7: Added Trending tool for GitHub and Hacker News
 - v0.1.6: Added Wikipedia search service
