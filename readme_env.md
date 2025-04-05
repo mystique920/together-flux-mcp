@@ -30,4 +30,13 @@ Therefore, to use this MCP server with the current version of LibreChat, you **m
 
 ## Recommendation for LibreChat Developers
 
-It is recommended that LibreChat be updated to pass necessary environment variables (like API keys required by MCP servers) down to the child processes it spawns. This would provide a cleaner and more standard integration method, aligning with how environment variables are typically managed in containerized applications. 
+It is recommended that LibreChat be updated to pass necessary environment variables (like API keys required by MCP servers) down to the child processes it spawns. This would provide a cleaner and more standard integration method, aligning with how environment variables are typically managed in containerized applications.
+
+Alternatively, the configuration mechanism for MCP servers within LibreChat could be enhanced to support standard environment variable substitution (e.g., resolving `${VAR_NAME}` from the main environment) within the server's specific `env` block.
+
+## Further Observations (Shell Execution & `env:` Block)
+
+Further testing revealed:
+
+*   **Shell Execution Works:** It's possible to successfully pass environment variables using variable substitution (e.g., `${SEARCH1API_KEY}`) if the MCP server is launched via a shell command invoked by LibreChat, rather than directly via LibreChat's Node.js spawning mechanism. This indicates the environment variables *are* available in the container's shell context.
+*   **`env:` Block Limitation:** When configuring an MCP server directly in LibreChat's configuration (e.g., `librechat.yaml`), using the `env:` block to set `SEARCH1API_KEY: ${VAR_FROM_MAIN_ENV}` does *not* perform the variable substitution. It works only if the literal key value is hardcoded. 
