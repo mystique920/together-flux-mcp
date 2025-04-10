@@ -2,7 +2,6 @@
 
 # Together AI Image Generation MCP Server
 
-[中文文档](./README_zh.md)
 
 A Model Context Protocol (MCP) server that provides image generation functionality using the Together AI API.
 
