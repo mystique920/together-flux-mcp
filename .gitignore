@@ -32,3 +32,9 @@ run.sh
 
 # MacOS
 .DS_Store
+
+# Windsurf
+.windsurfrules 
+
+# Cursor
+.cursor/
