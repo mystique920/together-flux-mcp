@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 import { log } from "./utils.js";
 import { createServer } from "./server.js";
-import { API_KEY } from "./config.js";
+import { TOGETHER_API_KEY } from "./config.js";
 
 /**
  * Main function - Program entry point
  */
 async function main() {
   // Ensure API key exists
-  if (!API_KEY) {
-    log("SEARCH1API_KEY environment variable is not set");
+  if (!TOGETHER_API_KEY) {
+    log("TOGETHER_API_KEY environment variable is not set");
     process.exit(1);
   }
 
   try {
-    log("Starting Search1API MCP server");
+    log("Starting Together AI Image Generation MCP server");
     const server = createServer();
     
     // Start server

@@ -21,3 +21,11 @@ node_modules/
 run.sh
 .windsurfrules
 .cursor/
+
+# Roo AI configuration files
+.roomodes
+.roorules-architect
+.roorules-ask
+.roorules-code
+.roorules-debug
+.roorules-test

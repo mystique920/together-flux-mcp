@@ -4,51 +4,48 @@ import { dirname, join } from 'path';
 import { log } from './utils.js';
 
 // Check API key directly from environment variables first
-let API_KEY = process.env.SEARCH1API_KEY;
-log(`Attempting to read SEARCH1API_KEY from environment: ${API_KEY ? 'Found' : 'Not found'}`);
+let TOGETHER_API_KEY = process.env.TOGETHER_API_KEY;
+log(`Attempting to read TOGETHER_API_KEY from environment: ${TOGETHER_API_KEY ? 'Found' : 'Not found'}`);
 
 // If not found in env, try loading from .env file in project root as fallback
-if (!API_KEY) {
-  log('SEARCH1API_KEY not found in environment, attempting to load from .env file in project root...');
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  // Path relative to the build directory (build/config.js) to reach project root
-  const projectRootEnvPath = join(__dirname, '../.env'); 
-  
+if (!TOGETHER_API_KEY) {
+  log('TOGETHER_API_KEY not found in environment, attempting to load from .env file in project root...');
+  // Explicitly define the expected path within the container based on volume mount
+  // This avoids potential issues with __dirname resolution in the container environment
+  const expectedProjectRoot = '/app/mcp-servers/together-flux-mcp'; // Adjust if your mount point differs
+  const projectRootEnvPath = join(expectedProjectRoot, '.env');
+  log(`[DEBUG] Using explicit project root path for .env: ${projectRootEnvPath}`);
+
   log(`Attempting to load .env from: ${projectRootEnvPath}`);
   const result = dotenv.config({ path: projectRootEnvPath });
 
   if (result.error) {
     log(`Failed to load .env from ${projectRootEnvPath}: ${result.error.message}`);
-  } else if (result.parsed && result.parsed.SEARCH1API_KEY) {
-    API_KEY = result.parsed.SEARCH1API_KEY;
-    log(`Successfully loaded SEARCH1API_KEY from ${projectRootEnvPath}`);
+  } else if (result.parsed && result.parsed.TOGETHER_API_KEY) {
+    TOGETHER_API_KEY = result.parsed.TOGETHER_API_KEY;
+    log(`Successfully loaded TOGETHER_API_KEY from ${projectRootEnvPath}`);
   } else {
-    log(`.env file found at ${projectRootEnvPath}, but SEARCH1API_KEY was not inside.`);
+    log(`.env file found at ${projectRootEnvPath}, but TOGETHER_API_KEY was not inside.`);
   }
 }
 
 // Final check
-if (!API_KEY) {
-  log('SEARCH1API_KEY could not be found in environment variables or the project root .env file.');
-  throw new Error("SEARCH1API_KEY is required. Set it in LibreChat's .env (ensure it's passed down) or place a .env file in the search1api-mcp project root.");
+if (!TOGETHER_API_KEY) {
+  log('TOGETHER_API_KEY could not be found in environment variables or the project root .env file.');
+  throw new Error("TOGETHER_API_KEY is required. Set it in your environment variables or place a .env file in the project root.");
 } else {
   log('API key located successfully.');
 }
 
 // API configuration
 export const API_CONFIG = {
-  BASE_URL: 'https://api.search1api.com',
-  DEFAULT_QUERY: 'latest news in the world',
+  BASE_URL: 'https://api.together.xyz',
+  // DEFAULT_QUERY: 'latest news in the world', // Removed as it's not relevant for image generation
   ENDPOINTS: {
-    SEARCH: '/search',
-    CRAWL: '/crawl',
-    SITEMAP: '/sitemap',
-    NEWS: '/news',
-    REASONING: '/v1/chat/completions',
-    TRENDING: '/trending'
+    IMAGE_GENERATION: '/v1/images/generations'
+    // Removed old endpoints: SEARCH, CRAWL, SITEMAP, NEWS, REASONING, TRENDING
   }
 } as const;
 
 // Export API key
-export { API_KEY };
+export { TOGETHER_API_KEY };

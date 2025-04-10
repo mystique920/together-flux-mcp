@@ -10,21 +10,21 @@ import {
   ReadResourceRequestSchema,
   ListToolsRequestSchema
 } from "@modelcontextprotocol/sdk/types.js";
-import { handleToolCall } from "./tools/handlers.js";
+// Removed import for old handlers: import { handleToolCall } from "./tools/handlers.js";
 import { log, formatError } from "./utils.js";
 import { handleListResources, handleReadResource } from "./resources.js";
-import { ALL_TOOLS } from "./tools/index.js";
+import { ALL_TOOLS, image_generation } from "./tools/index.js"; // Import the specific tool for easier access if needed, ALL_TOOLS is primary
 
 /**
  * Create and configure MCP server
  */
 export function createServer() {
-  log("Creating Search1API MCP server");
+  log("Creating Together AI Image Generation MCP server");
 
   // Create server instance
   const server = new Server({
-    name: "search1api-server",
-    version: "1.0.0"
+    name: "together-image-gen-mcp",
+    version: "0.1.0" // Reset version for the new purpose
   }, {
     capabilities: {
       resources: {},
@@ -86,7 +86,24 @@ function setupRequestHandlers(server: Server) {
       const toolArgs = request.params.arguments;
       
       log(`Tool call received: ${toolName}`);
-      return await handleToolCall(toolName, toolArgs);
+      
+      // Find the tool in the updated ALL_TOOLS array
+      const tool = ALL_TOOLS.find(t => t.name === toolName);
+
+      if (!tool) {
+        throw new McpError(ErrorCode.MethodNotFound, `Tool '${toolName}' not found.`); // Corrected ErrorCode
+      }
+
+      // Validate arguments against the tool's input schema (optional but recommended)
+      // const validationResult = validate(toolArgs, tool.inputSchema);
+      // if (!validationResult.valid) {
+      //   throw new McpError(ErrorCode.InvalidParams, `Invalid arguments for tool '${toolName}': ${validationResult.errors.join(', ')}`);
+      // }
+
+      // Call the tool's handler directly
+      // Cast handler to expected type before calling
+      const handler = tool.handler as (args: any) => Promise<any>;
+      return await handler(toolArgs);
     } catch (error) {
       handleError("handling tool call", error);
     }

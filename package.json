@@ -1,43 +1,43 @@
 {
-  "name": "search1api-mcp",
+  "name": "together-image-gen-mcp",
   "version": "0.2.0",
-  "description": "A Model Context Protocol (MCP) server that provides search and crawl functionality using Search1API",
+  "description": "A Model Context Protocol (MCP) server that provides image generation functionality using the Together AI API",
   "private": false,
   "type": "module",
   "bin": {
-    "search1api-mcp": "build/index.js"
+    "together-image-gen-mcp": "build/index.js"
   },
   "files": [
     "build"
   ],
   "scripts": {
-    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"if (!require('fs').existsSync('.env.example')) { require('fs').writeFileSync('.env.example', '# Search1API Configuration\\n# Get your API key from https://www.search1api.com/?utm_source=mcp\\nSEARCH1API_KEY=your_api_key_here\\n') }\"",
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\" && node -e \"if (!require('fs').existsSync('.env.example')) { require('fs').writeFileSync('.env.example', '# Together AI Configuration\\n# Get your API key from https://api.together.xyz/\\nTOGETHER_API_KEY=your_together_api_key_here\\n') }\"",
     "prepare": "npm run build",
     "watch": "tsc --watch",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.7.0",
+    "@modelcontextprotocol/sdk": "^1.9.0",
     "axios": "1.8.4",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^20.11.24",
     "typescript": "^5.3.3"
   },
   "keywords": [
     "mcp",
-    "claude",
-    "search",
-    "crawl",
-    "google",
-    "search1api"
+    "together ai",
+    "image generation",
+    "ai",
+    "api"
   ],
   "author": "fatwang2",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fatwang2/search1api-mcp.git"
+    "url": "git+<your-repository-url>"
   },
   "engines": {
     "node": ">=18.0.0"

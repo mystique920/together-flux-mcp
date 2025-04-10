@@ -1,4 +1,4 @@
-import { API_KEY, API_CONFIG } from './config.js';
+import { TOGETHER_API_KEY, API_CONFIG } from './config.js';
 import { log } from './utils.js';
 
 /**
@@ -21,7 +21,7 @@ export async function makeRequest<T>(endpoint: string, data: any): Promise<T> {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${API_KEY}`,
+        'Authorization': `Bearer ${TOGETHER_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data)

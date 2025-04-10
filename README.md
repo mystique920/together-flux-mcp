@@ -1,23 +1,27 @@
-# Search1API MCP Server
+⚠️ **Preview Release:** This MCP server is under active development. Expect verbose console logging and potential changes. Not recommended for production use yet.
+
+# Together AI Image Generation MCP Server
 
 [中文文档](./README_zh.md)
 
-A Model Context Protocol (MCP) server that provides search and crawl functionality using Search1API.
+A Model Context Protocol (MCP) server that provides image generation functionality using the Together AI API.
 
 ## Prerequisites
 
 - Node.js >= 18.0.0
-- A valid Search1API API key (See **Setup Guide** below on how to obtain and configure)
+- A valid Together AI API key (See **Setup Guide** below on how to obtain and configure)
+- **IMPORTANT:** Access to the Flux 1.1 Pro model requires a Together AI account with **Tier 2** enabled. A valid API key alone is not sufficient.
 
 ## Installation (Standalone / General)
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/fatwang2/search1api-mcp.git
-    cd search1api-mcp
+    # Consider renaming the repository if it's a fork or new project
+    git clone <your-repository-url>
+    cd <your-repository-directory>
     ```
 
-2.  **Configure API Key:** Before building, you need to provide your Search1API key. See the **Setup Guide** section below for different methods (e.g., using a `.env` file or environment variables).
+2.  **Configure API Key:** Before building, you need to provide your Together AI API key. See the **Setup Guide** section below for different methods (e.g., using a `.env` file or environment variables).
 
 3.  **Install dependencies and build:**
     ```bash
@@ -39,10 +43,10 @@ The server will then be ready to accept connections from MCP clients.
 
 ## Setup Guide
 
-### 1. Get Search1API Key
+### 1. Get Together AI API Key
 
-1.  Register at [Search1API](https://www.search1api.com/?utm_source=mcp)
-2.  Get your API key from your dashboard.
+1.  Obtain an API key from [Together AI](https://api.together.xyz/). (You might need to sign up or check their documentation for specific instructions).
+2.  Locate your API key in your Together AI account settings or dashboard.
 
 ### 2. Configure API Key
 
@@ -52,21 +56,22 @@ You need to make your API key available to the server. Choose **one** of the fol
 
 This method is required if integrating with the current version of LibreChat (see specific section below).
 
-1.  In the `search1api-mcp` project root directory, create a file named `.env`:
+1.  In the project root directory, create a file named `.env`:
     ```bash
-    # In the search1api-mcp directory
-    echo "SEARCH1API_KEY=your_api_key_here" > .env
+    # In the project directory
+    echo "TOGETHER_API_KEY=your_together_api_key_here" > .env
     ```
 2.  Replace `your_api_key_here` with your actual key.
-3.  Make sure this file exists **before** running `npm install && npm run build`.
+3.  Make sure this file exists **before** running `npm install`. The build step might be triggered automatically by `npm install` via the `prepare` script.
 
 **Method B: Environment Variable (Standalone Only)**
 
-Set the `SEARCH1API_KEY` environment variable before starting the server.
+Set the `TOGETHER_API_KEY` environment variable before starting the server.
 
 ```bash
-export SEARCH1API_KEY="your_api_key_here"
-npm start
+export TOGETHER_API_KEY="your_together_api_key_here"
+# Start the server (adjust command if needed, e.g., node build/index.js)
+node build/index.js
 ```
 
 **Method C: MCP Client Configuration (Advanced)**
@@ -76,34 +81,31 @@ Some MCP clients allow specifying environment variables directly in their config
 ```json
 {
   "mcpServers": {
-    "search1api": {
-      "command": "npx",
+    "together-image-gen": { // Use a descriptive name
+      "command": "node", // Assuming direct execution after build
       "args": [
-        "-y",
-        "search1api-mcp"
+        "/path/to/your/together-image-gen-mcp/build/index.js" // Adjust path as needed
       ],
       "env": {
-        "SEARCH1API_KEY": "YOUR_SEARCH1API_KEY"
+        "TOGETHER_API_KEY": "YOUR_TOGETHER_API_KEY"
       }
     }
   }
 }
 ```
 
-**Note for LibreChat Users:** Due to current limitations in LibreChat, Method A (Project `.env` File) is the **required** method. See the dedicated integration section below for full instructions.
+**Note on Integration:** The specific integration steps (e.g., for LibreChat) might need adjustments based on the client application and how it manages MCP servers. The `.env` file method is often reliable if the server process inherits the environment from where it's launched.
 
-## Integration with LibreChat (Docker)
+## Example Integration (Conceptual)
 
-This section details the required steps for integrating with LibreChat via Docker.
+This section provides a conceptual guide. Adapt paths and commands based on your specific client (e.g., LibreChat, Cline, Cursor) and setup (Docker, local).
 
 **Overview:**
 
-1.  Clone this server's repository into a location accessible by your LibreChat `docker-compose.yml`.
-2.  Configure the required API key using the **Project `.env` File method** within this server's directory.
-3.  Build this server.
-4.  Tell LibreChat how to run this server by editing `librechat.yaml`.
-5.  Make sure the built server code is available inside the LibreChat container via a Docker volume bind.
-6.  Restart LibreChat.
+1.  Ensure the server code is accessible to your client application.
+2.  Configure the required `TOGETHER_API_KEY` using the **Project `.env` File method** within this server's directory or via environment variables passed by the client.
+3.  Build this server (`npm install` should handle this via the `prepare` script).
+4.  Configure your MCP client to run this server, providing the correct command, arguments, and environment variables (like `TOGETHER_API_KEY`).
 
 **Step-by-Step:**
 
@@ -111,20 +113,21 @@ This section details the required steps for integrating with LibreChat via Docke
     Navigate to the directory on your host machine where you manage external services for LibreChat (this is often alongside your `docker-compose.yml`). A common location is a dedicated `mcp-server` directory.
     ```bash
     # Example: Navigate to where docker-compose.yml lives, then into mcp-server
-    cd /path/to/your/librechat/setup/mcp-server
-    git clone https://github.com/fatwang2/search1api-mcp.git
+    # Example: Navigate to where you store MCP servers
+    cd /path/to/your/mcp-servers
+    git clone <your-repository-url> # Clone your adapted repository
     ```
 
 2.  **Navigate into the Server Directory:**
     ```bash
-    cd search1api-mcp
+    cd <your-repository-directory>
     ```
 
-3.  **Configure API Key (Project `.env` File Method - Required for LibreChat):**
+3.  **Configure API Key (Project `.env` File Method):**
     ```bash
     # Create the .env file
-    echo "SEARCH1API_KEY=your_api_key_here" > .env
-    # IMPORTANT: Replace 'your_api_key_here' with your actual Search1API key
+    echo "TOGETHER_API_KEY=your_together_api_key_here" > .env
+    # IMPORTANT: Replace 'your_together_api_key_here' with your actual Together AI key
     ```
 
 4.  **Install Dependencies and Build:**
@@ -134,122 +137,67 @@ This section details the required steps for integrating with LibreChat via Docke
     npm run build
     ```
 
-5.  **Configure `librechat.yaml`:**
-    Edit your main `librechat.yaml` file to tell LibreChat how to execute this MCP server. Add an entry under `mcp_servers`:
+5.  **Configure MCP Client (Example: `librechat.yaml`):**
+    Edit your client's configuration file. Add an entry for this server:
     ```yaml
-    # In your main librechat.yaml
+    # Example for librechat.yaml
     mcp_servers:
-      # You can add other MCP servers here too
-      search1api:
-        # Optional: Display name for the server in LibreChat UI
-        # name: Search1API Tools
+      together-image-gen: # Use a descriptive name
+        # Optional: Display name for the server in the UI
+        # name: Together AI Image Gen
 
-        # Command tells LibreChat to use 'node'
+        # Command tells the client how to run the server
         command: node
 
-        # Args specify the script for 'node' to run *inside the container*
+        # Args specify the script for 'node' to run *inside the container/environment*
         args:
-          - /app/mcp-server/search1api-mcp/build/index.js
+          # Adjust this path based on your volume mapping / setup
+          - /app/mcp-servers/<your-repository-directory>/build/index.js
     ```
     *   The `args` path (`/app/...`) is the location *inside* the LibreChat API container where the built server will be accessed (thanks to the volume bind in the next step).
 
-6.  **Configure Docker Volume Bind:**
-    Edit your `docker-compose.yml` (or more likely, your `docker-compose.override.yml`) to map the `search1api-mcp` directory from your host machine into the LibreChat API container. Find the `volumes:` section for the `api:` service:
+6.  **Configure Docker Volume Bind (If using Docker):**
+    If your client runs in Docker, map the server directory from your host into the container. Edit your `docker-compose.yml` or `docker-compose.override.yml`:
     ```yaml
-    # In your docker-compose.yml or docker-compose.override.yml
+    # Example for docker-compose.yml
     services:
-      api:
+      your_client_service: # e.g., api for LibreChat
         # ... other service config ...
         volumes:
-          # ... other volumes likely exist here ...
+          # ... other volumes ...
 
-          # Add this volume bind:
-          - ./mcp-server/search1api-mcp:/app/mcp-server/search1api-mcp
+          # Add this volume bind (adjust paths):
+          - ./mcp-servers/<your-repository-directory>:/app/mcp-servers/<your-repository-directory>
     ```
-    *   **Host Path (`./mcp-server/search1api-mcp`):** This is the path on your host machine *relative* to where your `docker-compose.yml` file is located. Adjust it if you cloned the repo elsewhere.
-    *   **Container Path (`:/app/mcp-server/search1api-mcp`):** This is the path *inside* the container. It **must match** the directory structure used in the `librechat.yaml` `args` path.
+    *   **Host Path (`./mcp-servers/...`):** Path on your host relative to `docker-compose.yml`.
+    *   **Container Path (`:/app/mcp-servers/...`):** Path inside the container. Must align with the path used in the client config (`librechat.yaml` args).
 
-7.  **Restart LibreChat:**
-    Apply the changes by rebuilding (if you modified `docker-compose.yml`) and restarting your LibreChat stack.
-    ```bash
-    docker compose down && docker compose up -d --build
-    # Or: docker compose restart api (if only librechat.yaml changed)
-    ```
+7.  **Restart Client Application:**
+    Apply the configuration changes by restarting your client application (e.g., restart Docker containers).
 
-Now, the Search1API server should be available as a tool provider within LibreChat.
+Now, the Together AI Image Generation server should be available as a tool provider within your client.
 
 ## Features
 
-- Web search functionality
-- News search functionality
-- Web page content extraction
-- Website sitemap extraction
-- Deep thinking and complex problem solving with DeepSeek R1
-- Seamless integration with Claude Desktop, Cursor, Windsurf, Cline and other MCP clients
+- Generates images based on text prompts using the Together AI API.
+- Configurable parameters like model, dimensions, steps, etc.
+- Integrates with MCP clients (e.g., Cline, LibreChat, Cursor).
+## Tool: `image_generation`
 
-## Tools
-
-### 1. Search Tool
-- Name: `search`
-- Description: Search the web using Search1API
-- Parameters:
-  * `query` (required): Search query in natural language. Be specific and concise for better results
-  * `max_results` (optional, default: 10): Number of results to return
-  * `search_service` (optional, default: "google"): Search service to use (google, bing, duckduckgo, yahoo, x, reddit, github, youtube, arxiv, wechat, bilibili, imdb, wikipedia)
-  * `crawl_results` (optional, default: 0): Number of results to crawl for full webpage content
-  * `include_sites` (optional): List of sites to include in search
-  * `exclude_sites` (optional): List of sites to exclude from search
-  * `time_range` (optional): Time range for search results ("day", "month", "year")
-
-### 2. News Tool
-- Name: `news`
-- Description: Search for news articles using Search1API
-- Parameters:
-  * `query` (required): Search query in natural language. Be specific and concise for better results
-  * `max_results` (optional, default: 10): Number of results to return
-  * `search_service` (optional, default: "bing"): Search service to use (google, bing, duckduckgo, yahoo, hackernews)
-  * `crawl_results` (optional, default: 0): Number of results to crawl for full webpage content
-  * `include_sites` (optional): List of sites to include in search
-  * `exclude_sites` (optional): List of sites to exclude from search
-  * `time_range` (optional): Time range for search results ("day", "month", "year")
-
-### 3. Crawl Tool
-- Name: `crawl`
-- Description: Extract content from a URL using Search1API
-- Parameters:
-  * `url` (required): URL to crawl
-
-### 4. Sitemap Tool
-- Name: `sitemap`
-- Description: Get all related links from a URL
-- Parameters:
-  * `url` (required): URL to get sitemap
-
-### 5. Reasoning Tool
-- Name: `reasoning`
-- Description: A tool for deep thinking and complex problem solving with fast deepseek r1 model and web search ability(You can change to any other model in search1api website but the speed is not guaranteed)
-- Parameters:
-  * `content` (required): The question or problem that needs deep thinking
-
-### 6. Trending Tool
-- Name: `trending`
-- Description: Get trending topics from popular platforms
-- Parameters:
-  * `search_service` (required): Specify the platform to get trending topics from (github, hackernews)
-  * `max_results` (optional, default: 10): Maximum number of trending items to return
-
+- **Description:** Generates images based on a text prompt using the Together AI API.
+- **Parameters:**
+  * `model` (required, string): The model ID to use (e.g., "stabilityai/stable-diffusion-xl-1024-v1.0").
+  * `prompt` (required, string): The text prompt to guide image generation.
+  * `width` (optional, integer, default: 1024): Image width in pixels.
+  * `height` (optional, integer, default: 1024): Image height in pixels.
+  * `steps` (optional, integer, default: 20): Number of diffusion steps.
+  * `n` (optional, integer, default: 1): Number of images to generate.
+  * `seed` (optional, integer): Seed for reproducibility.
+  * `response_format` (optional, string, default: 'b64_json'): Format for returned images ('url' or 'b64_json').
+  * `stop` (optional, array of strings): Sequences to stop generation at.
 ## Version History
 
-- v0.2.0: Added fallback `.env` support for LibreChat integration and updated dependencies.
-- v0.1.8: Added X(Twitter) and Reddit search services
-- v0.1.7: Added Trending tool for GitHub and Hacker News
-- v0.1.6: Added Wikipedia search service
-- v0.1.5: Added new search parameters (include_sites, exclude_sites, time_range) and new search services (arxiv, wechat, bilibili, imdb)
-- v0.1.4: Added reasoning tool with deepseek r1 and updated the Cursor and Windsurf configuration guide
-- v0.1.3: Added news search functionality
-- v0.1.2: Added sitemap functionality
-- v0.1.1: Added web crawling functionality
-- v0.1.0: Initial release with search functionality
+- v0.1.0 (Refactored): Initial version focused on Together AI image generation. Adapted from search1api-mcp v0.2.0.
 
 ## License
 
