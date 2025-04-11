@@ -92,7 +92,8 @@ export const image_generation: Tool = {
     const requestBody: Record<string, any> = {
       model: "black-forest-labs/FLUX.1.1-pro",
       prompt: args.prompt,
-      response_format: args.response_format ?? 'b64_json', // Ensure default
+      // Use the requested response_format (default to 'url' if not provided)
+      response_format: args.response_format || 'url',
     };
     if (args.width !== undefined) requestBody.width = args.width;
     if (args.height !== undefined) requestBody.height = args.height;
@@ -126,12 +127,59 @@ export const image_generation: Tool = {
       // Basic validation/transformation can happen here if needed
       // For now, directly return the parsed response assuming it matches the output schema
       // Construct the response according to MCP standard (content array)
-      return {
-        content: response.data.map(item => ({
-          type: 'text', // Use 'text' type to convey the URL or base64 data as a string
-          text: item.url ?? item.b64_json ?? 'Error: No image data found in response item' // Prioritize URL if available
-        }))
-      };
+      // Import dependencies at the top of the handler
+      const fs = await import('fs');
+      const path = await import('path');
+      const { default: axios } = await import('axios');
+      const crypto = await import('crypto');
+
+      // Use Promise.all to handle async map
+      const content = await Promise.all(response.data.map(async (item) => {
+        if (item.url) {
+          // Download the image and save it to ./images
+          // Use user/session ID from args, fallback to 'default' if not provided
+          const userId = args.user_id || 'default';
+          // Save to the same directory as native image tools for LibreChat
+          const imagesDir = path.resolve('/app/client/public/images', userId);
+          if (!fs.existsSync(imagesDir)) {
+            fs.mkdirSync(imagesDir, { recursive: true });
+          }
+          // Ensure user directory exists
+          if (!fs.existsSync(imagesDir)) {
+            fs.mkdirSync(imagesDir, { recursive: true });
+          }
+          // Generate a unique filename
+          const ext = path.extname(item.url.split('?')[0]) || '.png';
+          const filename = `img_${crypto.randomBytes(8).toString('hex')}${ext}`;
+          const filePath = path.join(imagesDir, filename);
+
+          try {
+            const response = await axios({
+              method: 'get',
+              url: item.url,
+              responseType: 'arraybuffer'
+            });
+            fs.writeFileSync(filePath, response.data);
+            // Return the local file path as a plain path for LibreChat rendering
+            return {
+              type: 'text',
+              text: `/images/${userId}/${filename}`
+            };
+          } catch (err) {
+            return {
+              type: 'text',
+              text: `Error downloading image from URL: ${item.url}`
+            };
+          }
+        }
+        // Fallback: error message if no image data found
+        return {
+          type: 'text',
+          text: 'Error: No image URL found in response item'
+        };
+      }));
+
+      return { content };
 
     } catch (error: any) {
       log('Error calling Together AI API:', error);
