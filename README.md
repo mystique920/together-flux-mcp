@@ -1,4 +1,10 @@
 ⚠️ **Preview Release:** This MCP server is under active development. Expect verbose console logging and potential changes. Not recommended for production use yet.
+**Important Notice:**
+- In this branch, generated images are **not stored locally**. They are only available in your browser cache, and Together AI deletes generated images from their servers quickly.
+  **It is strongly recommended to save any images you want to keep as soon as they are generated.**
+- For users who require **permanent local storage of generated images**, there is a separate branch:
+  **`v0.2.0` (LibreChat exclusive)** — This version supports only LibreChat and stores all generated images permanently on your local machine.
+
 
 # Together AI Image Generation MCP Server
 
