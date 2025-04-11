@@ -196,6 +196,7 @@ Now, the Together AI Image Generation server should be available as a tool provi
   * `stop` (optional, array of strings): Sequences to stop generation at.
 ## Version History
 
+- v0.1.1 (Bugfix): Fixed a bug in `src/tools/image_generation.ts` where the image generation request would fail unless the model name matched the precise string as shown on the model card. The tool now always uses the correct default model ("black-forest-labs/FLUX.1.1-pro") internally, so users do not need to specify the exact model name. This version is working and recommended for all users.
 - v0.1.0 (Refactored): Initial version focused on Together AI image generation. Adapted from search1api-mcp v0.2.0.
 
 ## License

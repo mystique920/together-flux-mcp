@@ -1,6 +1,6 @@
 {
   "name": "together-image-gen-mcp",
-  "version": "0.2.0",
+  "version": "0.1.1",
   "description": "A Model Context Protocol (MCP) server that provides image generation functionality using the Together AI API",
   "private": false,
   "type": "module",
