@@ -9,7 +9,7 @@ const imageGenerationInputSchema = {
   properties: {
     model: {
       type: 'string',
-      description: 'The model to use for image generation (e.g., "stabilityai/stable-diffusion-xl-1024-v1.0").',
+      description: 'The ONLY supported model is "black-forest-labs/FLUX.1.1-pro". Any other value will be ignored.',
     },
     prompt: {
       type: 'string',
@@ -90,7 +90,7 @@ export const image_generation: Tool = {
     // Construct the request body for the Together AI API
     // Only include optional parameters if they are provided in args
     const requestBody: Record<string, any> = {
-      model: args.model,
+      model: "black-forest-labs/FLUX.1.1-pro",
       prompt: args.prompt,
       response_format: args.response_format ?? 'b64_json', // Ensure default
     };
